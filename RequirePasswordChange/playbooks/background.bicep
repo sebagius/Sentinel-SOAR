@@ -1,4 +1,4 @@
-import {backgroundPlaybookName, backgroundPlaybookFriendlyName, mailboxAddress} from '../variables.bicep'
+import {backgroundPlaybookName, backgroundPlaybookFriendlyName, mailboxAddress, deploymentResourceGroup, deploymentSubscription} from '../variables.bicep'
 
 #disable-next-line BCP081 //Bicep cannot look up the spec as it is not published correctly by Microsoft
 resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-07-01' = {
@@ -9,6 +9,14 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
   }
   properties: {
     state: 'Enabled'
+    accessControl: {
+      actions: {
+        allowedCallerIpAddresses: []
+      }
+      triggers: {
+        allowedCallerIpAddresses: []
+      }
+    }
     definition: {
       '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
       contentVersion: '1.0.0.0'
@@ -61,7 +69,7 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
       actions: {
         Verify_user_exists: {
           runAfter: {
-            Response: [
+            Valid_Caller: [
               'Succeeded'
             ]
           }
@@ -669,14 +677,62 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
           }
           type: 'If'
         }
-        Response: {
-          runAfter: {}
-          type: 'Response'
-          kind: 'Http'
-          inputs: {
-            statusCode: 200
+        Valid_Caller: {
+          actions: {
+            Response: {
+              type: 'Response'
+              kind: 'Http'
+              inputs: {
+                statusCode: 200
+              }
+              operationOptions: 'Asynchronous'
+            }
           }
-          operationOptions: 'Asynchronous'
+          runAfter: {}
+          else: {
+            actions: {
+              Terminate: {
+                runAfter: {
+                  Response_failed: [
+                    'Succeeded'
+                  ]
+                }
+                type: 'Terminate'
+                inputs: {
+                  runStatus: 'Failed'
+                  runError: {
+                    code: '401'
+                    message: 'Invalid Logic app caller'
+                  }
+                }
+              }
+              Response_failed: {
+                type: 'Response'
+                kind: 'Http'
+                inputs: {
+                  statusCode: 400
+                }
+                operationOptions: 'Asynchronous'
+              }
+            }
+          }
+          expression: {
+            and: [
+              {
+                equals: [
+                  '@triggerOutputs()?[\'headers\']?[\'x-ms-workflow-resourcegroup-name\']'
+                  '${deploymentResourceGroup}'
+                ]
+              }
+              {
+                equals: [
+                  '@triggerOutputs()?[\'headers\']?[\'x-ms-workflow-subscription-id\']'
+                  '${deploymentSubscription}'
+                ]
+              }
+            ]
+          }
+          type: 'If'
         }
       }
       outputs: {}
