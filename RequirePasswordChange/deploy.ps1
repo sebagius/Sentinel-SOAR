@@ -5,13 +5,13 @@ Connect-Entra -Scopes "Application.ReadWrite.All", "User.ReadWrite.All", "AppRol
 $graphapi = Get-EntraServicePrincipal -Filter "AppId eq '00000003-0000-0000-c000-000000000000'" # Retrieve Graph API Service Principal
 
 $passwordWritePerm = $graphapi.AppRoles `
-    | where Value -Like "User-PasswordProfile.ReadWrite.All" `
+    | Where-Object Value -Like "User-PasswordProfile.ReadWrite.All" `
     | Select-Object -First 1
 $revokeSessionPerm = $graphapi.AppRoles `
-    | where Value -Like "User.RevokeSessions.All" `
+    | Where-Object Value -Like "User.RevokeSessions.All" `
     | Select-Object -First 1
 $mailsendPerm = $graphapi.AppRoles `
-    | where Value -Like "Mail.Send" `
+    | Where-Object Value -Like "Mail.Send" `
     | Select-Object -First 1
 $serviceprincipal = Get-EntraServicePrincipal -Filter "displayName eq 'RequirePasswordChange'"
 
@@ -31,7 +31,7 @@ Disconnect-Entra
 # This is optional
 Connect-ExchangeOnline
 $mbox = Get-Mailbox -Identity 'cybersecurity' -ErrorAction SilentlyContinue
-if($mbox -eq $null) {
+if($null -eq $mbox) {
     $mbox = New-Mailbox -Shared -Name "ICT Cyber Security" -DisplayName "ICT Cyber Security" -Alias 'cybersecurity'
 }
 
