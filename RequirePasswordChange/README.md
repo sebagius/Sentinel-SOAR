@@ -24,14 +24,14 @@ Additional privileges for the deploying user identity
 TBD
 
 ## Deployment Artifacts
-| Name/Resource                    | Required           | Type                          | Dependencies |
-| -------------------------------- | ------------------ | ----------------------------- | ------------ |
-| playbooks/background             | :white_check_mark: | Logic App                     | None         |
-| Background Service (Identity)    | :white_check_mark: | Entra Service Principal (App) | playbooks/background |
-| apiConnections/sentinel          |                    | API Connection                | None         |
-| Shared Mailbox                   |                    | Exchange Online Mailbox       | None         |
-| Managed Identities (Logic Apps)  |                    | Entra Service Principal (App) | every logic app         |
-| playbooks/incident_instantchange |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange |
+| Name/Resource                                                              | Required           | Type                          | Dependencies |
+| -------------------------------------------------------------------------- | ------------------ | ----------------------------- | ------------ |
+| [playbooks/background](playbooks/background.bicep)                         | :white_check_mark: | Logic App                     | None         |
+| [Background Service](scripts/entra_privileges.bicep) (Identity)            | :white_check_mark: | Entra Service Principal (App) | playbooks/background |
+| [apiConnections/sentinel](apiConnections/sentinel.bicep)                   |                    | API Connection                | None         |
+| [Shared Mailbox](scripts/mailbox_setup.bicep)                              |                    | Exchange Online Mailbox       | None         |
+| Managed Identities (Logic Apps)                                            |                    | Entra Service Principal (App) | every logic app         |
+| [playbooks/incident_instantchange](playbooks/incident_instantchange.bicep) |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange |
 
 ### WIP
 | Name/Resource                    | Required           | Type                          | Dependencies |
