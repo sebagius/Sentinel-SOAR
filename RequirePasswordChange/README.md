@@ -19,3 +19,63 @@ Additional privileges for the deploying user identity
 * Privileges to create a mailbox if one is not already created (**Not Required**)
 * Privileges to create a security distribution group and add mailboxes to it (**Not Required**)
 * Privileges to assign application access policy to app  (**Not Required**)
+
+## Configuration Recommendations
+TBD
+
+## Deployment Artifacts
+### RequirePasswordChange (Background Service)
+**Required:** yes
+**Type:** Logic App
+**Short Description:** Background service logic app.
+
+### Sentinel API Connection
+**Required:** no
+**Type:** API Connection
+**Short Description:** API Connection for sentinel playbooks
+
+### Incident-ImmediatePasswordChange
+**Required:** no
+**Dependency:** Sentinel API Connection
+**Type:** Logic App
+**Short Description:** Sentinel Incident playbook requiring the user to immediately change their password
+
+### Incident-24HPasswordChange
+**WIP**
+**Required:** no
+**Dependency:** Sentinel API Connection, Email Functionality Deployment
+**Type:** Logic App
+**Short Description:** Sentinel Incident playbook requiring the user to immediately change their password within 24H hours.
+
+### Incident-7DPasswordChange
+**WIP**
+**Required:** no
+**Dependency:** Sentinel API Connection, Email Functionality Deployment
+**Type:** Logic App
+**Short Description:** Sentinel Incident playbook requiring the user to immediately change their password within 7 days.
+
+### Entity-ImmediatePasswordChange
+**Required:** no
+**Type:** Logic App
+**Short Description:** Sentinel Entity playbook requiring the user to immediately change their password
+
+### Entity-24HPasswordChange
+**WIP**
+**Required:** no
+**Dependency:** Sentinel API Connection, Email Functionality Deployment
+**Type:** Logic App
+**Short Description:** Sentinel Entity playbook requiring the user to immediately change their password within 24H hours.
+
+### Entity-7DPasswordChange
+**WIP**
+**Required:** no
+**Dependency:** Sentinel API Connection, Email Functionality Deployment
+**Type:** Logic App
+**Short Description:** Sentinel Entity playbook requiring the user to immediately change their password within 7 days.
+
+### Automation-LeakedCredentials
+**WIP**
+**Required:** no
+**Dependency:** Sentinel API Connection, Email Functionality Deployment, Incident-24HPasswordChange
+**Type:** Sentinel Automation Rule
+**Short Description:** Runs the 24h password change when a leaked credentials alert arrives in sentinel from Entra ID Protection connector
