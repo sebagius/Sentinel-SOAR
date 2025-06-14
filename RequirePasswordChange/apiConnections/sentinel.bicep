@@ -3,7 +3,7 @@ import {apiConnection} from '../variables.bicep'
 resource connections_azuresentinel 'Microsoft.Web/connections@2016-06-01' = {
   name: apiConnection.connectionName
   location: 'australiasoutheast'
-  kind: 'V1'
+  //kind: 'V1' remove in 2016 api version but exists in 2015 version
   properties: {
     displayName: apiConnection.connectionName
     statuses: [
