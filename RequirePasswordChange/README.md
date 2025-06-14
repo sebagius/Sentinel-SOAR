@@ -24,58 +24,22 @@ Additional privileges for the deploying user identity
 TBD
 
 ## Deployment Artifacts
-### RequirePasswordChange (Background Service)
-**Required:** yes
-**Type:** Logic App
-**Short Description:** Background service logic app.
+| Name/Resource                    | Required           | Type                          | Dependencies |
+| -------------------------------- | ------------------ | ----------------------------- | ------------ |
+| playbooks/background             | :white_check_mark: | Logic App                     | None         |
+| Background Service (Identity)    | :white_check_mark: | Entra Service Principal (App) | playbooks/background |
+| apiConnections/sentinel          |                    | API Connection                | None         |
+| Shared Mailbox                   |                    | Exchange Online Mailbox       | None         |
+| Managed Identities (Logic Apps)  |                    | Entra Service Principal (App) | every logic app         |
+| playbooks/incident_instantchange |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange |
 
-### Sentinel API Connection
-**Required:** no
-**Type:** API Connection
-**Short Description:** API Connection for sentinel playbooks
-
-### Incident-ImmediatePasswordChange
-**Required:** no
-**Dependency:** Sentinel API Connection
-**Type:** Logic App
-**Short Description:** Sentinel Incident playbook requiring the user to immediately change their password
-
-### Incident-24HPasswordChange
-**WIP**
-**Required:** no
-**Dependency:** Sentinel API Connection, Email Functionality Deployment
-**Type:** Logic App
-**Short Description:** Sentinel Incident playbook requiring the user to immediately change their password within 24H hours.
-
-### Incident-7DPasswordChange
-**WIP**
-**Required:** no
-**Dependency:** Sentinel API Connection, Email Functionality Deployment
-**Type:** Logic App
-**Short Description:** Sentinel Incident playbook requiring the user to immediately change their password within 7 days.
-
-### Entity-ImmediatePasswordChange
-**Required:** no
-**Type:** Logic App
-**Short Description:** Sentinel Entity playbook requiring the user to immediately change their password
-
-### Entity-24HPasswordChange
-**WIP**
-**Required:** no
-**Dependency:** Sentinel API Connection, Email Functionality Deployment
-**Type:** Logic App
-**Short Description:** Sentinel Entity playbook requiring the user to immediately change their password within 24H hours.
-
-### Entity-7DPasswordChange
-**WIP**
-**Required:** no
-**Dependency:** Sentinel API Connection, Email Functionality Deployment
-**Type:** Logic App
-**Short Description:** Sentinel Entity playbook requiring the user to immediately change their password within 7 days.
-
-### Automation-LeakedCredentials
-**WIP**
-**Required:** no
-**Dependency:** Sentinel API Connection, Email Functionality Deployment, Incident-24HPasswordChange
-**Type:** Sentinel Automation Rule
-**Short Description:** Runs the 24h password change when a leaked credentials alert arrives in sentinel from Entra ID Protection connector
+### WIP
+| Name/Resource                    | Required           | Type                          | Dependencies |
+| -------------------------------- | ------------------ | ----------------------------- | ------------ |
+| Incident-24HPasswordChange       |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange, Shared Mailbox |
+| Incident-7DPasswordChange        |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange, Shared Mailbox |
+| Entity-ImmediatePasswordChange   |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange |
+| Entity-24HPasswordChange         |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange, Shared Mailbox |
+| Entity-7DPasswordChange          |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange, Shared Mailbox |
+| LeakedCreds24HPwdChange          |                    | Automation Rule (Sentinel)    | Incident-24HPasswordChange |
+| LeakedCredsImmediatePwdChange    |                    | Automation Rule (Sentinel)    | Incident-ImmediatePasswordChange |
