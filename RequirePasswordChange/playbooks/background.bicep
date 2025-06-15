@@ -1,4 +1,4 @@
-import {backgroundPlaybookName, backgroundPlaybookFriendlyName, mailboxAddress, deploymentResourceGroup, deploymentSubscription} from '../variables.bicep'
+import {backgroundPlaybookName, backgroundPlaybookFriendlyName, mailboxAddress, deployment} from '../variables.bicep'
 
 #disable-next-line BCP081 //Bicep cannot look up the spec as it is not published correctly by Microsoft
 resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-07-01' = {
@@ -721,13 +721,13 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
               {
                 equals: [
                   '@triggerOutputs()?[\'headers\']?[\'x-ms-workflow-resourcegroup-name\']'
-                  '${deploymentResourceGroup}'
+                  '${deployment.resourceGroupName}'
                 ]
               }
               {
                 equals: [
                   '@triggerOutputs()?[\'headers\']?[\'x-ms-workflow-subscription-id\']'
-                  '${deploymentSubscription}'
+                  '${deployment.subscriptionId}'
                 ]
               }
             ]

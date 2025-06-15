@@ -1,20 +1,39 @@
 /*
-The following variables are references for project wide settings
+The following variables are for the deployment target
 */
 @export()
-var deploymentSubscription = ''
+var deployment = {
+  subscriptionId: ''
+  resourceGroupName: ''
+}
 
+/*
+The following variables are configuration options you are required to set
+*/
 @export()
-var deploymentResourceGroup = ''
-
-@export()
-var apiConnection = {
-  id: '/subscriptions/${deploymentSubscription}/providers/Microsoft.Web/locations/australiasoutheast/managedApis/azuresentinel'
-  connectionId: '/subscriptions/${deploymentSubscription}/resourceGroups/${deploymentResourceGroup}/providers/Microsoft.Web/connections/azuresentinel-${backgroundPlaybookName}'
-  connectionName: 'azuresentinel-${backgroundPlaybookName}'
-  connectionProperties: {
-    authentication: {
-      type: 'ManagedServiceIdentity'
+var features = {
+  email: {
+    enabled: true
+    statusNotifications: true
+  }
+  sentinel: {
+    enabled: true
+    incidentPlaybooks: {
+      immediateChange: true
+      waitTimeChange: [
+        {
+          amount: 24
+          measure: 'hours'
+        }
+        {
+          amount: 7
+          measure: 'days'
+        }
+      ]
+    }
+    entityPlaybooks: {
+      immediateChange: true
+      waitTimeChange: []
     }
   }
 }
@@ -29,7 +48,7 @@ var backgroundPlaybookName = 'RequirePasswordChange'
 var backgroundPlaybookFriendlyName = 'Require Password Change'
 
 @export()
-var backgroundPlaybookReference = '/subscriptions/${deploymentSubscription}/resourceGroups/${deploymentResourceGroup}/providers/Microsoft.Logic/workflows/${backgroundPlaybookName}'
+var backgroundPlaybookReference = '/subscriptions/${deployment.subscriptionId}/resourceGroups/${deployment.resourceGroupName}/providers/Microsoft.Logic/workflows/${backgroundPlaybookName}'
 
 /*
 The following variables are references used for the sentinel based playbooks

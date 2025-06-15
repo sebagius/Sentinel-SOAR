@@ -1,4 +1,5 @@
-import {incidentInstantPasswordChange, backgroundPlaybookReference, apiConnection, mailboxAddress} from '../variables.bicep'
+import {incidentInstantPasswordChange, backgroundPlaybookReference, mailboxAddress} from '../variables.bicep'
+import {apiConnection} from '../apiConnections/sentinel.bicep'
 
 #disable-next-line BCP081 //Bicep cannot look up the spec as it is not published correctly by Microsoft
 resource workflows_RequirePasswordChangeInstant_name_resource 'Microsoft.Logic/workflows@2017-07-01' = {

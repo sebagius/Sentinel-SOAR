@@ -1,4 +1,16 @@
-import {apiConnection} from '../variables.bicep'
+import {deployment,backgroundPlaybookName} from '../variables.bicep'
+
+@export()
+var apiConnection = {
+    id: '/subscriptions/${deployment.subscriptionId}/providers/Microsoft.Web/locations/australiasoutheast/managedApis/azuresentinel'
+    connectionId: '/subscriptions/${deployment.subscriptionId}/resourceGroups/${deployment.resourceGroupName}/providers/Microsoft.Web/connections/azuresentinel-${backgroundPlaybookName}'
+    connectionName: 'azuresentinel-${backgroundPlaybookName}'
+    connectionProperties: {
+      authentication: {
+        type: 'ManagedServiceIdentity'
+      }
+    }
+}
 
 resource connections_azuresentinel 'Microsoft.Web/connections@2016-06-01' = {
   name: apiConnection.connectionName

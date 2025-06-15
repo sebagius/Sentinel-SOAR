@@ -42,4 +42,4 @@ TBD
 | Entity-24HPasswordChange         |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange, Shared Mailbox |
 | Entity-7DPasswordChange          |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange, Shared Mailbox |
 | LeakedCreds24HPwdChange          |                    | Automation Rule (Sentinel)    | Incident-24HPasswordChange |
-| LeakedCredsImmediatePwdChange    |                    | Automation Rule (Sentinel)    | Incident-ImmediatePasswordChange |
+| [automationRules/leakedcreds_immediate](automationRules/leakedcreds_immediate.bicep) |          | Automation Rule (Sentinel)    | playbooks/incident_instantchange |
