@@ -29,15 +29,44 @@ Disconnect-Entra
 
 # Create email notification shared mailbox. Exchange Online Administrator privileges required
 # This is optional
+$mailboxAddress = 'cybersecurity'
+$mailboxDisplayName = "ICT Cyber Security"
+$securityGroupAlias = 'cybersecurity_bgservice'
+$securityGroupName = "Cyber Security Background Email Services"
+$serviceprincipalAppId = ''
+
 Connect-ExchangeOnline
-$mbox = Get-Mailbox -Identity 'cybersecurity' -ErrorAction SilentlyContinue
+$mbox = Get-Mailbox -Identity $mailboxAddress -ErrorAction SilentlyContinue
 if($null -eq $mbox) {
-    $mbox = New-Mailbox -Shared -Name "ICT Cyber Security" -DisplayName "ICT Cyber Security" -Alias 'cybersecurity'
+    $mbox = New-Mailbox -Shared -Name $mailboxDisplayName -DisplayName $mailboxDisplayName -Alias $mailboxAddress
+
+    if($null -eq $mbox) {
+        Write-Host "Failed to create mailbox. Quitting"
+        Exit-PSSession
+    }
 }
 
-New-DistributionGroup -Name "Cyber Security Background Email Services" -Alias "cybersecurity_bgservice" -Type security
-Add-DistributionGroupMember -Identity "cybersecurity_bgservice" -Member "cybersecurity"
-New-ApplicationAccessPolicy -AppId $serviceprincipal.AppId -PolicyScopeGroupId "cybersecurity_bgservice" -AccessRight RestrictAccess -Description "Allows the app to use a shared mailbox to send emails."
-Test-ApplicationAccessPolicy -Identity 'cybersecurity' -AppId $serviceprincipal.AppId
-Test-ApplicationAccessPolicy -Identity 'postmaster' -AppId $serviceprincipal.AppId
+$securitydg = Get-DistributionGroup -Identity $securityGroupAlias -ErrorAction SilentlyContinue
+
+if($null -eq $securitydg) {
+    $securitydg = New-DistributionGroup -Name $securityGroupName -Alias $securityGroupAlias -Type security -ErrorAction SilentlyContinue
+
+    if($null -eq $securitydg) {
+        Write-Host "Failed to create distribution group. Quitting"
+        Exit-PSSession
+    }
+}
+
+$res = Add-DistributionGroupMember -Identity $securitydg.Alias -Member $mailboxAddress -ErrorAction SilentlyContinue
+if($null -eq $res) {
+    Write-Host "Failed to add distribution group member"
+}
+
+$res = New-ApplicationAccessPolicy -AppId $serviceprincipalAppId -PolicyScopeGroupId $securitydg.Alias -AccessRight RestrictAccess -Description "Allows the app to use a shared mailbox to send emails."
+if($null -eq $res) {
+    Write-Host "Failed to assign access policy - beware if mail privileges was granted the service principal can send on behalf of anyone!"
+}
+
+Test-ApplicationAccessPolicy -Identity $mailboxAddress -AppId $serviceprincipalAppId
+Test-ApplicationAccessPolicy -Identity 'postmaster' -AppId $serviceprincipalAppId
 Disconnect-ExchangeOnline
