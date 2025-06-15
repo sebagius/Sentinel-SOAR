@@ -1,4 +1,4 @@
-import {playbooks} from '../variables.bicep'
+import {playbooks} from '../configuration.bicep'
 
 @export()
 var apiConnection = {

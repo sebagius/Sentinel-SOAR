@@ -1,4 +1,4 @@
-import {playbooks, features} from '../variables.bicep'
+import {playbooks, features} from '../configuration.bicep'
 
 var emailTemplate = loadTextContent('../emailTemplates/requireChangeTargetUser.html')
 var emailTemplateSubject = 'IT Requires you to change your password'

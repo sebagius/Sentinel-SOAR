@@ -1,4 +1,4 @@
-import {playbooks, features} from '../variables.bicep'
+import {playbooks, features} from '../configuration.bicep'
 import {apiConnection} from '../apiConnections/sentinel.bicep'
 
 param backgroundServicePlaybookId string

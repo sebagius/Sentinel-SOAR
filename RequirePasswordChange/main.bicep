@@ -1,4 +1,4 @@
-import {playbooks} from 'variables.bicep'
+import {playbooks} from 'configuration.bicep'
 import {apiConnection} from 'apiConnections/sentinel.bicep'
 
 module sentinelApi 'apiConnections/sentinel.bicep' = {
