@@ -3,6 +3,12 @@ The following variables are configuration options you are required to set
 */
 @export()
 var features = {
+  manualScriptDeployment: false // If you would like to run scripts manually outside of the deployment, set this to true
+  backgroundService: {
+    identity: {
+      entraRole: 'Privileged Authentication Administrator' // Recommended: Privileged Authentication Administrator or Authentication Administrator
+    }
+  }
   email: {
     enabled: true
     statusNotifications: true
