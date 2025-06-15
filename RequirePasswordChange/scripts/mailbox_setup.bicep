@@ -1,3 +1,5 @@
+//Important: TODO: Merge manual script with current script and convert from cmdlets to graph api calls
+
 import {features, playbooks} from '../configuration.bicep'
 
 param identityId string
@@ -58,7 +60,6 @@ if($null -eq $res) {
 
 Test-ApplicationAccessPolicy -Identity $mailboxAddress -AppId $serviceprincipalAppId
 Test-ApplicationAccessPolicy -Identity 'postmaster' -AppId $serviceprincipalAppId
-Disconnect-Entra
 Disconnect-ExchangeOnline
     ''')
     retentionInterval: 'PT1H'
