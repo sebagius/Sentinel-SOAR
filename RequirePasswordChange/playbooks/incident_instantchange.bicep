@@ -119,6 +119,27 @@ resource workflows_RequirePasswordChangeInstant_name_resource 'Microsoft.Logic/w
           }
           type: 'Foreach'
         }
+        'Add_comment_to_incident_(V3)': {
+          runAfter: {
+            For_each: [
+              'Succeeded'
+            ]
+          }
+          type: 'ApiConnection'
+          inputs: {
+            host: {
+              connection: {
+                name: '@parameters(\'$connections\')[\'azuresentinel\'][\'connectionId\']'
+              }
+            }
+            method: 'post'
+            body: {
+              incidentArmId: '@triggerBody()?[\'object\']?[\'id\']'
+              message: '<p class="editor-paragraph">SOAR: Requiring user to change password immediately.</p>'
+            }
+            path: '/Incidents/Comment'
+          }
+        }
       }
       outputs: {}
     }
