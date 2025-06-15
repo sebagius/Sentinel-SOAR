@@ -17,7 +17,7 @@ module immediateChange 'playbooks/incident_instantchange.bicep' = {
   }
 }
 
-resource exchangeDeploymentScriptIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if(features.scriptDeployment.enabled && features.email.enabled) {
+resource deploymentScriptIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if(features.scriptDeployment.enabled) {
   name: features.scriptDeployment.identityName
   location: resourceGroup().location
 }
@@ -29,6 +29,6 @@ resource exchangeDeploymentScriptIdentity 'Microsoft.ManagedIdentity/userAssigne
 module mailScript 'scripts/mailbox_setup.bicep' = if(features.scriptDeployment.enabled && features.email.enabled) {
   name: 'script-deployment-exchange'
   params: {
-    identityId: exchangeDeploymentScriptIdentity.id
+    identityId: deploymentScriptIdentity.id
   }
 }
