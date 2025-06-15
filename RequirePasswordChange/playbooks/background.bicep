@@ -1,5 +1,8 @@
 import {playbooks, features, deployment} from '../variables.bicep'
 
+var emailTemplate = loadTextContent('../emailTemplates/requireChangeTargetUser.html')
+var emailTemplateSubject = 'IT Requires you to change your password'
+
 #disable-next-line BCP081 //Bicep cannot look up the spec as it is not published correctly by Microsoft
 resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-07-01' = {
   name: playbooks.backgroundService.name
@@ -545,10 +548,10 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
                         }
                       }
                     ]
-                    subject: 'IT Requires you to change your password'
+                    subject: emailTemplateSubject
                     body: {
-                      contentType: 'text'
-                      content: 'Hi, Your IT department requires you to change your password within the next @{triggerBody()?[\'wait\']?[\'hours\']} hours. After this time period you will be signed out, requiring you to change your password on next logon.'
+                      contentType: 'html'
+                      content: emailTemplate
                     }
                   }
                 }
