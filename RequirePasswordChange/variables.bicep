@@ -15,6 +15,7 @@ var features = {
   email: {
     enabled: true
     statusNotifications: true
+    senderAddress: 'cybersecurity@example.org'
   }
   sentinel: {
     enabled: true
@@ -39,25 +40,20 @@ var features = {
 }
 
 /*
-The following variables are references used for the main playbook which executes the code as well as service principal privileges
+The following variables are for deployment of playbooks/logic apps
 */
 @export()
-var backgroundPlaybookName = 'RequirePasswordChange'
+var playbooks = {
+  backgroundService: {
+    name: 'RequirePasswordChange'
+    friendlyName: 'Require Password Change'
+  }
+  immediatePasswordChange: {
+    name: 'RequirePasswordChangeInstant'
+  }
+}
 
 @export()
-var backgroundPlaybookFriendlyName = 'Require Password Change'
-
-@export()
-var backgroundPlaybookReference = '/subscriptions/${deployment.subscriptionId}/resourceGroups/${deployment.resourceGroupName}/providers/Microsoft.Logic/workflows/${backgroundPlaybookName}'
-
-/*
-The following variables are references used for the sentinel based playbooks
-*/
-@export()
-var incidentInstantPasswordChange = 'RequirePasswordChangeInstant'
-
-/*
-The following variables reference email related settings
-*/
-@export()
-var mailboxAddress = 'cybersecurity@example.org'
+var playbookReferences = {
+  backgroundService: '/subscriptions/${deployment.subscriptionId}/resourceGroups/${deployment.resourceGroupName}/providers/Microsoft.Logic/workflows/${playbooks.backgroundService.name}'
+}

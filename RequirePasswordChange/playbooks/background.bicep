@@ -1,8 +1,8 @@
-import {backgroundPlaybookName, backgroundPlaybookFriendlyName, mailboxAddress, deployment} from '../variables.bicep'
+import {playbooks, features, deployment} from '../variables.bicep'
 
 #disable-next-line BCP081 //Bicep cannot look up the spec as it is not published correctly by Microsoft
 resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-07-01' = {
-  name: backgroundPlaybookName
+  name: playbooks.backgroundService.name
   location: 'australiasoutheast'
   identity: {
     type: 'SystemAssigned'
@@ -22,7 +22,7 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
       contentVersion: '1.0.0.0'
       parameters: {
         notifier_email: {
-          defaultValue: mailboxAddress
+          defaultValue: features.email.senderAddress
           type: 'String'
         }
         '$connections': {
@@ -133,7 +133,7 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
                     }
                   }
                 ]
-                subject: '${backgroundPlaybookFriendlyName} failed to run'
+                subject: '${playbooks.backgroundService.friendlyName} failed to run'
                 body: {
                   contentType: 'text'
                   content: 'Failed to retrieve user id @{triggerBody()?[\'user_id\']}'
@@ -230,7 +230,7 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
                         }
                       }
                     ]
-                    subject: '${backgroundPlaybookFriendlyName} failed to run'
+                    subject: '${playbooks.backgroundService.friendlyName} failed to run'
                     body: {
                       contentType: 'text'
                       content: 'Failed to require password change with MFA for @{body(\'Validate_response\')?[\'userPrincipalName\']} - it\'s possible that this user is hybrid and that the mfa change password is not directory synchronised'
@@ -333,7 +333,7 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
                           }
                         }
                       ]
-                      subject: '${backgroundPlaybookFriendlyName} failed to run'
+                      subject: '${playbooks.backgroundService.friendlyName} failed to run'
                       body: {
                         contentType: 'text'
                         content: 'Failed to require password change for user id @{body(\'Validate_response\')?[\'userPrincipalName\']} - it\'s possible that this user is hybrid and that the change password variable is not directory synchronised'
@@ -417,7 +417,7 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
                     }
                   }
                 ]
-                subject: '${backgroundPlaybookFriendlyName} succeeded in running'
+                subject: '${playbooks.backgroundService.friendlyName} succeeded in running'
                 body: {
                   contentType: 'text'
                   content: 'Successfully required @{body(\'Validate_response\')?[\'userPrincipalName\']} to change password next logon'
@@ -492,7 +492,7 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
                     }
                   }
                 ]
-                subject: '${backgroundPlaybookFriendlyName} partial success in running'
+                subject: '${playbooks.backgroundService.friendlyName} partial success in running'
                 body: {
                   contentType: 'text'
                   content: 'Successfully required @{body(\'Validate_response\')?[\'userPrincipalName\']} to change password next logon - but was unable to revoke sign in sessions. Please do this manually.'

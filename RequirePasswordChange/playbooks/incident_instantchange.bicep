@@ -1,9 +1,9 @@
-import {incidentInstantPasswordChange, backgroundPlaybookReference, mailboxAddress} from '../variables.bicep'
+import {playbooks, playbookReferences, features} from '../variables.bicep'
 import {apiConnection} from '../apiConnections/sentinel.bicep'
 
 #disable-next-line BCP081 //Bicep cannot look up the spec as it is not published correctly by Microsoft
 resource workflows_RequirePasswordChangeInstant_name_resource 'Microsoft.Logic/workflows@2017-07-01' = {
-  name: incidentInstantPasswordChange
+  name: playbooks.immediatePasswordChange.name
   location: 'australiasoutheast'
   identity: {
     type: 'SystemAssigned'
@@ -60,12 +60,12 @@ resource workflows_RequirePasswordChangeInstant_name_resource 'Microsoft.Logic/w
                   inputs: {
                     host: {
                       workflow: {
-                        id: backgroundPlaybookReference
+                        id: playbookReferences.backgroundService
                       }
                       triggerName: 'When_a_HTTP_request_is_received'
                     }
                     body: {
-                      initiator: mailboxAddress
+                      initiator: features.email.senderAddress
                       user_id: '@concat(item()?[\'Name\'],\'@\',item()?[\'UPNSuffix\'])'
                       mfa: false
                       wait: {
@@ -83,12 +83,12 @@ resource workflows_RequirePasswordChangeInstant_name_resource 'Microsoft.Logic/w
                     inputs: {
                       host: {
                         workflow: {
-                          id: backgroundPlaybookReference
+                          id: playbookReferences.backgroundService
                         }
                         triggerName: 'When_a_HTTP_request_is_received'
                       }
                       body: {
-                        initiator: mailboxAddress
+                        initiator: features.email.senderAddress
                         user_id: '@item()?[\'AadUserId\']'
                         mfa: false
                         wait: {
