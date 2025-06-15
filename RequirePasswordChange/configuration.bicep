@@ -3,7 +3,10 @@ The following variables are configuration options you are required to set
 */
 @export()
 var features = {
-  manualScriptDeployment: false // If you would like to run scripts manually outside of the deployment, set this to true
+  scriptDeployment: {
+    enabled: true
+    identityName: 'script-deployment-identity'
+  }
   backgroundService: {
     identity: {
       entraRole: 'Privileged Authentication Administrator' // Recommended: Privileged Authentication Administrator or Authentication Administrator
@@ -13,6 +16,9 @@ var features = {
     enabled: true
     statusNotifications: true
     senderAddress: 'cybersecurity@example.org'
+    senderDisplayName: 'ICT Cyber Security'
+    securityGroupAlias: 'cybersecurity_bgservice'
+    securityGroupName: 'Cyber Security Background Email Services'
   }
   sentinel: {
     enabled: true

@@ -17,10 +17,18 @@ module immediateChange 'playbooks/incident_instantchange.bicep' = {
   }
 }
 
-module entraScript 'scripts/entra_privileges.bicep' = if(!features.manualScriptDeployment) {
-  name: 'script-deployment-entra'
+resource exchangeDeploymentScriptIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if(features.scriptDeployment.enabled && features.email.enabled) {
+  name: features.scriptDeployment.identityName
+  location: resourceGroup().location
 }
 
-module mailScript 'scripts/mailbox_setup.bicep' = if(!features.manualScriptDeployment && features.email.enabled) {
+/*module entraScript 'scripts/entra_privileges.bicep' = if(!features.manualScriptDeployment) {
+  name: 'script-deployment-entra'
+} not developed yet*/
+
+module mailScript 'scripts/mailbox_setup.bicep' = if(features.scriptDeployment.enabled && features.email.enabled) {
   name: 'script-deployment-exchange'
+  params: {
+    identityId: exchangeDeploymentScriptIdentity.id
+  }
 }
