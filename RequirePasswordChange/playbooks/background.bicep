@@ -730,7 +730,7 @@ resource backgroundServicePlaybook 'Microsoft.Logic/workflows@2017-07-01' = {
               {
                 equals: [
                   '@triggerOutputs()?[\'headers\']?[\'x-ms-workflow-subscription-id\']'
-                  '${subscription().id}'
+                  '${subscription().subscriptionId}'
                 ]
               }
             ]
