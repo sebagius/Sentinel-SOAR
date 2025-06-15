@@ -21,7 +21,7 @@ Additional privileges for the deploying user identity
 * Privileges to assign application access policy to app  (**Not Required**)
 
 ## Important: Deployment Scripts
-To provide the necessary privileges to the service principal which conducts graph activities a deployment script needs to be executed. One of three options can be used to run the deployment scripts.
+To provide the necessary privileges to the service principal which conducts graph activities a deployment script needs to be executed. One of two options can be used to run the deployment scripts.
 1. Not recommended: Run the deployment scripts manually as an authenticated user - these can be found in the [scripts/manual](scripts/manual) directory.
 2. Recommended: Deploy a user assigned managed identity to the resource group with the required privileges* for deployment, this script can be found in the [scripts/uami/deploy.ps1](scripts/uami/deploy.ps1) file.
 
