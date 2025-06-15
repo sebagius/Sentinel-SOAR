@@ -1,5 +1,7 @@
-import {playbooks, playbookReferences, features} from '../variables.bicep'
+import {playbooks, features} from '../variables.bicep'
 import {apiConnection} from '../apiConnections/sentinel.bicep'
+
+param backgroundServicePlaybookId string
 
 #disable-next-line BCP081 //Bicep cannot look up the spec as it is not published correctly by Microsoft
 resource workflows_RequirePasswordChangeInstant_name_resource 'Microsoft.Logic/workflows@2017-07-01' = {
@@ -60,7 +62,7 @@ resource workflows_RequirePasswordChangeInstant_name_resource 'Microsoft.Logic/w
                   inputs: {
                     host: {
                       workflow: {
-                        id: playbookReferences.backgroundService
+                        id: backgroundServicePlaybookId
                       }
                       triggerName: 'When_a_HTTP_request_is_received'
                     }
@@ -83,7 +85,7 @@ resource workflows_RequirePasswordChangeInstant_name_resource 'Microsoft.Logic/w
                     inputs: {
                       host: {
                         workflow: {
-                          id: playbookReferences.backgroundService
+                          id: backgroundServicePlaybookId
                         }
                         triggerName: 'When_a_HTTP_request_is_received'
                       }

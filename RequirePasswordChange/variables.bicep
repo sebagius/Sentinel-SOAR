@@ -1,13 +1,4 @@
 /*
-The following variables are for the deployment target
-*/
-@export()
-var deployment = {
-  subscriptionId: ''
-  resourceGroupName: ''
-}
-
-/*
 The following variables are configuration options you are required to set
 */
 @export()
@@ -51,9 +42,4 @@ var playbooks = {
   immediatePasswordChange: {
     name: 'RequirePasswordChangeInstant'
   }
-}
-
-@export()
-var playbookReferences = {
-  backgroundService: '/subscriptions/${deployment.subscriptionId}/resourceGroups/${deployment.resourceGroupName}/providers/Microsoft.Logic/workflows/${playbooks.backgroundService.name}'
 }

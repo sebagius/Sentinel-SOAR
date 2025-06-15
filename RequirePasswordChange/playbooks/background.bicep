@@ -1,10 +1,10 @@
-import {playbooks, features, deployment} from '../variables.bicep'
+import {playbooks, features} from '../variables.bicep'
 
 var emailTemplate = loadTextContent('../emailTemplates/requireChangeTargetUser.html')
 var emailTemplateSubject = 'IT Requires you to change your password'
 
 #disable-next-line BCP081 //Bicep cannot look up the spec as it is not published correctly by Microsoft
-resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-07-01' = {
+resource backgroundServicePlaybook 'Microsoft.Logic/workflows@2017-07-01' = {
   name: playbooks.backgroundService.name
   location: 'australiasoutheast'
   identity: {
@@ -724,13 +724,13 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
               {
                 equals: [
                   '@triggerOutputs()?[\'headers\']?[\'x-ms-workflow-resourcegroup-name\']'
-                  '${deployment.resourceGroupName}'
+                  '${resourceGroup().name}'
                 ]
               }
               {
                 equals: [
                   '@triggerOutputs()?[\'headers\']?[\'x-ms-workflow-subscription-id\']'
-                  '${deployment.subscriptionId}'
+                  '${subscription().id}'
                 ]
               }
             ]
@@ -747,3 +747,5 @@ resource workflows_backgroundplaybook_resource 'Microsoft.Logic/workflows@2017-0
     }
   }
 }
+
+output backgroundServicePlaybookId string = backgroundServicePlaybook.id

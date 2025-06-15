@@ -1,9 +1,9 @@
-import {deployment,playbooks} from '../variables.bicep'
+import {playbooks} from '../variables.bicep'
 
 @export()
 var apiConnection = {
-    id: '/subscriptions/${deployment.subscriptionId}/providers/Microsoft.Web/locations/australiasoutheast/managedApis/azuresentinel'
-    connectionId: '/subscriptions/${deployment.subscriptionId}/resourceGroups/${deployment.resourceGroupName}/providers/Microsoft.Web/connections/azuresentinel-${playbooks.backgroundService.name}'
+    id: subscriptionResourceId('Microsoft.Web/locations/managedApis', 'australiasoutheast', 'azuresentinel')
+    connectionId: resourceId('Microsoft.Web/connections', 'azuresentinel-${playbooks.backgroundService.name}')
     connectionName: 'azuresentinel-${playbooks.backgroundService.name}'
     connectionProperties: {
       authentication: {
@@ -15,17 +15,16 @@ var apiConnection = {
 resource connections_azuresentinel 'Microsoft.Web/connections@2016-06-01' = {
   name: apiConnection.connectionName
   location: 'australiasoutheast'
-  //kind: 'V1' remove in 2016 api version but exists in 2015 version
+  //kind: 'V1' //removed in 2016 api version but exists in 2015 version
   properties: {
     displayName: apiConnection.connectionName
-    statuses: [
-      {
-        status: 'Ready'
-      }
-    ]
     customParameterValues: {}
-    createdTime: '2025-06-13T07:21:12.9127029Z'
-    changedTime: '2025-06-14T01:27:25.6988525Z'
+    #disable-next-line BCP037 //This is required for managed identity support
+    authenticatedUser: {}
+    #disable-next-line BCP037 //This is required for managed identity support
+    alternativeParameterValues: {}
+    #disable-next-line BCP037 //This is required for managed identity support
+    parameterValueType: 'Alternative'
     api: {
       name: 'azuresentinel'
       displayName: 'Microsoft Sentinel'
