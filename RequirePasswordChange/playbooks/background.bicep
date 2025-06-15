@@ -6,7 +6,7 @@ var emailTemplateSubject = 'IT Requires you to change your password'
 #disable-next-line BCP081 //Bicep cannot look up the spec as it is not published correctly by Microsoft
 resource backgroundServicePlaybook 'Microsoft.Logic/workflows@2017-07-01' = {
   name: playbooks.backgroundService.name
-  location: 'australiasoutheast'
+  location: resourceGroup().location
   identity: {
     type: 'SystemAssigned'
   }

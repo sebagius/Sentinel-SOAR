@@ -2,7 +2,7 @@ import {playbooks} from '../variables.bicep'
 
 @export()
 var apiConnection = {
-    id: subscriptionResourceId('Microsoft.Web/locations/managedApis', 'australiasoutheast', 'azuresentinel')
+    id: subscriptionResourceId('Microsoft.Web/locations/managedApis', resourceGroup().location, 'azuresentinel')
     connectionId: resourceId('Microsoft.Web/connections', 'azuresentinel-${playbooks.backgroundService.name}')
     connectionName: 'azuresentinel-${playbooks.backgroundService.name}'
     connectionProperties: {
@@ -14,7 +14,7 @@ var apiConnection = {
 
 resource connections_azuresentinel 'Microsoft.Web/connections@2016-06-01' = {
   name: apiConnection.connectionName
-  location: 'australiasoutheast'
+  location: resourceGroup().location
   //kind: 'V1' //removed in 2016 api version but exists in 2015 version
   properties: {
     displayName: apiConnection.connectionName
