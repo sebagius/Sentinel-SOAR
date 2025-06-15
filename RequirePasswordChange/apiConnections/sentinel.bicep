@@ -1,3 +1,4 @@
+/* Originally developed by Sebastian Agius */
 import {playbooks} from '../configuration.bicep'
 
 @export()

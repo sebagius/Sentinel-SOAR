@@ -1,3 +1,4 @@
+/* Originally developed by Sebastian Agius */
 import {playbooks, features} from 'configuration.bicep'
 import {apiConnection} from 'apiConnections/sentinel.bicep'
 

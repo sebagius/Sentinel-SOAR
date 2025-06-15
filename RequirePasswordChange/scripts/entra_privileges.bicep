@@ -1,3 +1,4 @@
+/* Originally developed by Sebastian Agius */
 //Important: TODO: Merge manual script with current script and convert from cmdlets to graph api calls
 
 param identityId string

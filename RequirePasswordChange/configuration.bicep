@@ -1,3 +1,4 @@
+/* Originally developed by Sebastian Agius */
 /*
 The following variables are configuration options you are required to set
 */

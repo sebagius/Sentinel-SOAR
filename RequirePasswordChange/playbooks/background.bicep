@@ -1,3 +1,4 @@
+/* Originally developed by Sebastian Agius */
 import {playbooks, features} from '../configuration.bicep'
 
 var emailTemplate = loadTextContent('../emailTemplates/requireChangeTargetUser.html')

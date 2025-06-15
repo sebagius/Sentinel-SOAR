@@ -1,3 +1,4 @@
+# Originally developed by Sebastian Agius #
 function New-EntraMultipleSPAppRoleAssignment {
     param([string]$ServicePrincipalName, [string]$ResourceId, [string[]]$Perms)
 
