@@ -38,4 +38,6 @@ if($null -eq $mbox) {
 New-DistributionGroup -Name "Cyber Security Background Email Services" -Alias "cybersecurity_bgservice" -Type security
 Add-DistributionGroupMember -Identity "cybersecurity_bgservice" -Member "cybersecurity"
 New-ApplicationAccessPolicy -AppId $serviceprincipal.AppId -PolicyScopeGroupId "cybersecurity_bgservice" -AccessRight RestrictAccess -Description "Allows the app to use a shared mailbox to send emails."
+Test-ApplicationAccessPolicy -Identity 'cybersecurity' -AppId $serviceprincipal.AppId
+Test-ApplicationAccessPolicy -Identity 'postmaster' -AppId $serviceprincipal.AppId
 Disconnect-ExchangeOnline
