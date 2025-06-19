@@ -1,0 +1,2 @@
+# Reset KrbTgt
+In some disaster situations you may need to reset the kerberos password in the domain. This playbook will execute a script or a defined amount of times in a period once executed. If the machine is on-prem or in another cloud, you can use an Azure Arc resource, otherwise if the resource is an Azure VM that can also be used. Options include running directly on the domain controller, or on a server with RSAT tools.
