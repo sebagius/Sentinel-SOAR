@@ -6,6 +6,10 @@ var features = {
     resource: ''
     type: '' // Hybrid Compute / Compute
   }
+  resetOptions: {
+    amount: 2 // default krbtgt password history is 2 so need to reset twice
+    delay: 150 // wait 3 minutes between each reset
+  }
   approvalFlow: {
     enabled: false // for future use
     approvers: [
