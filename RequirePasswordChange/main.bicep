@@ -1,24 +1,24 @@
 /* Originally developed by Sebastian Agius */
-import {playbooks, features} from 'configuration.bicep'
+import {features} from 'configuration.bicep'
 import {apiConnection} from 'apiConnections/sentinel.bicep'
 
 module sentinelApi 'apiConnections/sentinel.bicep' = {
   name: apiConnection.connectionName
 }
 
-module backgroundService 'playbooks/background.bicep' = {
-  name: playbooks.backgroundService.name
-}
-
-module immediateChange 'playbooks/incident_instantchange.bicep' = {
+module playbookDeployment 'playbooks/base_dynamic.bicep' = [for playbook in features.playbooks: {
   dependsOn: [sentinelApi]
-  name: playbooks.immediatePasswordChange.name
+  name: playbook.playbookName
   params: {
-    backgroundServicePlaybookId: backgroundService.outputs.backgroundServicePlaybookId
+    playbookName: playbook.playbookName
+    waitMeasure: playbook.waitMeasure
+    waitTime: playbook.waitTime
+    notifierEmail: features.email.senderAddress
+    alertRecipient: features.email.internalNotifications.recipientAddress
   }
-}
+}]
 
-resource deploymentScriptIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if(features.scriptDeployment.enabled) {
+/*resource deploymentScriptIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if(features.scriptDeployment.enabled) {
   name: features.scriptDeployment.identityName
   location: resourceGroup().location
 }
@@ -27,9 +27,9 @@ resource deploymentScriptIdentity 'Microsoft.ManagedIdentity/userAssignedIdentit
   name: 'script-deployment-entra'
 } not developed yet*/
 
-module mailScript 'scripts/mailbox_setup.bicep' = if(features.scriptDeployment.enabled && features.email.enabled) {
+/*module mailScript 'scripts/mailbox_setup.bicep' = if(features.scriptDeployment.enabled && features.email.enabled) {
   name: 'script-deployment-exchange'
   params: {
     identityId: deploymentScriptIdentity.id
   }
-}
+}*/
