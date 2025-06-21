@@ -40,7 +40,7 @@ resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2017-07-01' = 
         }
       }
       triggers: {
-        sentinelIncident: {
+        Microsoft_Sentinel_incident: {
           type: 'ApiConnectionWebhook'
           inputs: {
             host: {
@@ -49,12 +49,12 @@ resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2017-07-01' = 
               }
             }
             body: {
-              callback_url: '@{listCallbackUrl()}'
+              callback_url: '@listCallbackUrl()'
             }
             path: '/incident-creation'
           }
         }
-        sentinelEntity: {
+        Microsoft_Sentinel_entity: {
           type: 'ApiConnectionWebhook'
           inputs: {
             host: {
@@ -63,12 +63,12 @@ resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2017-07-01' = 
               }
             }
             body: {
-              callback_url: '@{listCallbackUrl()}'
+              callback_url: '@listCallbackUrl()'
             }
             path: '/entity/@{encodeURIComponent(\'Account\')}'
           }
         }
-        http: {
+        /*http: {
           type: 'Request'
           kind: 'Http'
           inputs: {
@@ -85,7 +85,7 @@ resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2017-07-01' = 
               }
             }
           }
-        }
+        }*/
       }
       actions: {
         Trigger_Type: {
