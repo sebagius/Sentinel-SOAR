@@ -42,13 +42,13 @@ TBD
 | Managed Identities (Logic Apps)                                            |                    | Entra Service Principal (App) | every logic app         |
 | [playbooks/incident_instantchange](playbooks/incident_instantchange.bicep) |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange |
 
-### WIP
-| Name/Resource                    | Required           | Type                          | Dependencies |
-| -------------------------------- | ------------------ | ----------------------------- | ------------ |
-| Incident-24HPasswordChange       |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange, Shared Mailbox |
-| Incident-7DPasswordChange        |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange, Shared Mailbox |
-| Entity-ImmediatePasswordChange   |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange |
-| Entity-24HPasswordChange         |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange, Shared Mailbox |
-| Entity-7DPasswordChange          |                    | Logic App (Sentinel)          | Sentinel API Connection, RequirePasswordChange, Shared Mailbox |
-| LeakedCreds24HPwdChange          |                    | Automation Rule (Sentinel)    | Incident-24HPasswordChange |
-| [automationRules/leakedcreds_immediate](automationRules/leakedcreds_immediate.bicep) |          | Automation Rule (Sentinel)    | playbooks/incident_instantchange |
+# Feature Status
+:white_check_mark: Background Service Playbook
+:white_check_mark: Sample 24H Time-bound Playbook
+:white_check_mark: Manual Deployment scripts (for mailbox privileges and graph privileges)
+:x: Dynamic time-bound/trigger playbook generation
+:x: Automatic deployment scripts
+:x: PIM for automatic deployment scripts
+:x: Sample Automation Rules
+:x: Configuration documentation
+:x: Rework email system
