@@ -15,11 +15,21 @@ var features = {
   }
   email: {
     enabled: true
-    statusNotifications: true
     senderAddress: 'cybersecurity@example.org'
     senderDisplayName: 'ICT Cyber Security'
     securityGroupAlias: 'cybersecurity_bgservice'
     securityGroupName: 'Cyber Security Background Email Services'
+    internalNotifications: { //todo
+      enabled: false
+      recipientAddress: 'cybersecurity@example.org'
+      template: 'emailTemplates/statusEmail.html'
+    }
+    endUserNotifications: {
+      timeBoundEnabled: true
+      timeBoundTemplate: 'emailTemplates/requireChangeTargetUser.html'
+      immediateEnabled: false
+      immediateTemplate: 'emailTemplates/immediateChangeRequired.html'
+    }
   }
   sentinel: {
     enabled: true
