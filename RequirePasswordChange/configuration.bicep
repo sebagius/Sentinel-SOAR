@@ -33,22 +33,24 @@ var features = {
   }
   sentinel: {
     enabled: true
-    incidentPlaybooks: {
-      immediateChange: true
+    playbooks: {
       waitTimeChange: [
+        {
+          amount: 0 // instant/immediate change
+          measure: 'hours'
+          playbookName: 'RequirePasswordChange-Instant'
+        }
         {
           amount: 24
           measure: 'hours'
+          playbookName: 'RequirePasswordChange-24H'
         }
         {
           amount: 7
           measure: 'days'
+          playbookName: 'RequirePasswordChange-7D'
         }
       ]
-    }
-    entityPlaybooks: {
-      immediateChange: true
-      waitTimeChange: []
     }
   }
 }
