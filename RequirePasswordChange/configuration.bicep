@@ -27,10 +27,12 @@ var features = {
       template: 'emailTemplates/statusEmail.html'
     }
     endUserNotifications: {
-      timeBoundEnabled: true
-      timeBoundTemplate: 'emailTemplates/requireChangeTargetUser.html'
-      immediateEnabled: false
-      immediateTemplate: 'emailTemplates/immediateChangeRequired.html'
+      timeBoundEnabled: true //todo
+      timeBoundTemplate: 'emailTemplates/timeChangeRequired.html'
+      timeBoundSubject: 'IT Requires you to change your password'
+      immediateEnabled: false //todo
+      immediateTemplate: 'emailTemplates/immediateChangeRequired.html' //todo
+      immediateSubject: 'IT Required you to change your password' //todo
     }
   }
 

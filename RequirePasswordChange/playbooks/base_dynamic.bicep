@@ -1,7 +1,5 @@
 /* Originally developed by Sebastian Agius */
-//import { features } from '../configuration.bicep'
 import { apiConnection } from '../apiConnections/sentinel.bicep'
-//import { changePasswordActions } from './background.bicep' todo
 
 param playbookName string
 param waitTime int
@@ -9,6 +7,11 @@ param waitMeasure string
 
 param notifierEmail string
 param alertRecipient string
+
+param immediateSubject string
+param immediateTemplate string
+param timeBoundSubject string
+param timeBoundTemplate string
 
 #disable-next-line BCP081 //Bicep cannot look up the spec as it is not published correctly by Microsoft
 resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2017-07-01' = {
@@ -437,10 +440,10 @@ var changePasswordActions = {
                   }
                 }
               ]
-              subject: 'IT Requires you to change your password'
+              subject: timeBoundSubject
               body: {
                 contentType: 'html'
-                content: '<div>\n    <h2>Notification from Example ICT Department</h2>\n    <p>You are required to change your password within the next {time}. After this time elapses you will be logged out and required to change your password if you have not done so.</p>\n    <br/>\n    <p>Thanks for your patience.</p>\n    <br/>\n    <p>Regards,<br/>Example ICT</p>\n</div>'
+                content: timeBoundTemplate
               }
             }
           }
