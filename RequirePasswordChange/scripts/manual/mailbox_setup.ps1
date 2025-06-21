@@ -6,15 +6,15 @@ function New-EntraMultipleSPAppRoleAssignment {
     $targetPrincipal = Get-EntraServicePrincipal -Filter "displayName eq '$ServicePrincipalName'"
 
     foreach($permName in $Perms) {
-        $perm = $targetResource.AppRoles | Where-Object -Value -eq $permName | Select-Object -First 1
-        New-EntraServicePrincipalAppRoleAssignment -Id $perm -ServicePrincipalId $targetPrincipal.Id -PrincipalId $targetPrincipal.Id -ResourceId $targetResource.Id
+        $perm = $targetResource.AppRoles | Where-Object Value -eq $permName | Select-Object -First 1
+        New-EntraServicePrincipalAppRoleAssignment -Id $perm.Id -ServicePrincipalId $targetPrincipal.Id -PrincipalId $targetPrincipal.Id -ResourceId $targetResource.Id
     }
 
-    return targetPrincipal
+    return $targetPrincipal
 }
 
 Connect-Entra -Scopes "Application.ReadWrite.All", "User.ReadWrite.All", "AppRoleAssignment.ReadWrite.All", "Directory.Read.All","RoleManagement.ReadWrite.Directory"
-$servicePrincipalName = 'RequirePasswordChange'
+$servicePrincipalName = 'RequirePasswordChange-Instant'
 $servicePrincipal = New-EntraMultipleSPAppRoleAssignment -ServicePrincipalName $servicePrincipalName -ResourceId "00000003-0000-0000-c000-000000000000" -Perms @("Mail.Send")
 $serviceprincipalAppId = $servicePrincipal.AppId
 Disconnect-Entra
@@ -47,7 +47,7 @@ if($null -eq $securitydg) {
 }
 
 $res = Add-DistributionGroupMember -Identity $securitydg.Alias -Member $mailboxAddress -ErrorAction SilentlyContinue
-if($null -eq $res) {
+if($null -eq $res) { # todo, result is null even if success
     Write-Host "Failed to add distribution group member"
 }
 
