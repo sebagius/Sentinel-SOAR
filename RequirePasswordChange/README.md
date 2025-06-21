@@ -45,7 +45,7 @@ TBD
 # Feature Status
 :white_check_mark: Background Service Playbook
 
-:white_check_mark: Sample 24H Time-bound Playbook
+:white_check_mark: Sample Instant Playbook with Incident Trigger
 
 :white_check_mark: Manual Deployment scripts (for mailbox privileges and graph privileges)
 
