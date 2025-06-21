@@ -1,5 +1,5 @@
 /* Originally developed by Sebastian Agius */
-import {playbooks, features} from '../configuration.bicep'
+import { playbooks, features } from '../configuration.bicep'
 
 var emailTemplate = loadTextContent('../emailTemplates/requireChangeTargetUser.html')
 var emailTemplateSubject = 'IT Requires you to change your password'
@@ -748,5 +748,3 @@ resource backgroundServicePlaybook 'Microsoft.Logic/workflows@2017-07-01' = {
     }
   }
 }
-
-output backgroundServicePlaybookId string = backgroundServicePlaybook.id
