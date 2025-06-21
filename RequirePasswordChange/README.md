@@ -44,11 +44,19 @@ TBD
 
 # Feature Status
 :white_check_mark: Background Service Playbook
+
 :white_check_mark: Sample 24H Time-bound Playbook
+
 :white_check_mark: Manual Deployment scripts (for mailbox privileges and graph privileges)
+
 :x: Dynamic time-bound/trigger playbook generation
+
 :x: Automatic deployment scripts
+
 :x: PIM for automatic deployment scripts
+
 :x: Sample Automation Rules
+
 :x: Configuration documentation
+
 :x: Rework email system
