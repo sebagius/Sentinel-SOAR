@@ -69,7 +69,7 @@ chrome.webNavigation.onCompleted.addListener((details) => {
     const tabId = details.tabId;
     const url = details.url;
 
-    if (!url.includes("azure.com"))
+    if (!(url.startsWith("https://portal.azure.com/#view/Microsoft_Azure_Security_Insights"))) 
         return;
 
     isDebuggerAttached(tabId, (attached) => {
