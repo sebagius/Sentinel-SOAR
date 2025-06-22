@@ -1,7 +1,11 @@
 {
-    "name": "Multitrigger Sentinel",
+    "name": "Multitrigger Playbooks - Sentinel",
+    "description": "Fix UI bug to allow multi-trigger sentinel playbooks",
     "version": "1.0",
     "manifest_version": 3,
+    "icons": {
+        "128": "icon128.png"
+    },
     "permissions": [
         "debugger",
         "tabs",
