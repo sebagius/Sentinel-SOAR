@@ -29,7 +29,7 @@ function fixBody(responseBody) {
 
     for (i in responseBody['data']['rows']) {
         const item = responseBody['data']['rows'][i];
-        if (!(item[4]['provisioningState'] === "Succeeded")) { // placement four is the logic app definition
+        if (!(item[4]['provisioningState'] === "Succeeded")) { // placement four is the logic app definition, hopefully this won't change
             newBody['data']['rows'].push(item)
             continue
         }
@@ -72,7 +72,6 @@ chrome.webNavigation.onCompleted.addListener((details) => {
     if (!url.includes("azure.com"))
         return;
 
-
     isDebuggerAttached(tabId, (attached) => {
         if (attached) {
             return;
@@ -84,37 +83,34 @@ chrome.webNavigation.onCompleted.addListener((details) => {
             chrome.debugger.sendCommand({ tabId: tabId }, "Fetch.enable", {
                 patterns: [{ urlPattern: "https://management.azure.com/providers/Microsoft.ResourceGraph/resources*", requestStage: "Response" }]
             });
+        });
 
-            chrome.debugger.onEvent.addListener((source, method, params) => {
-                if (method === "Fetch.requestPaused") {
-                    const { requestId } = params;
+        chrome.debugger.onEvent.addListener((source, method, params) => {
+            if (method !== "Fetch.requestPaused")
+                return;
 
+            const { requestId } = params;
 
-                    chrome.debugger.sendCommand(source, "Fetch.getResponseBody", { requestId }, (response) => {
-                        let body = response.body;
+            chrome.debugger.sendCommand(source, "Fetch.getResponseBody", { requestId }, (response) => {
+                let body = response.body;
 
-                        if (!isJsonResponse(params.responseHeaders)) {
-                            chrome.debugger.sendCommand(source, "Fetch.fulfillRequest", {
-                                requestId,
-                                responseCode: 200,
-                                responseHeaders: params.responseHeaders,
-                                body: body
-                            });
-                            return;
-                        }
-
-                        const parsedBody = JSON.parse(atob(body));
-                        const newBody = fixBody(parsedBody);
-
-                        chrome.debugger.sendCommand(source, "Fetch.fulfillRequest", {
-                            requestId,
-                            responseCode: 200,
-                            responseHeaders: params.responseHeaders,
-                            body: btoa(JSON.stringify(newBody))
-                        });
-                    });
+                if (!isJsonResponse(params.responseHeaders)) {
+                    chrome.debugger.sendCommand(source, "Fetch.continueRequest", {requestId});
+                    return;
                 }
+
+                const parsedOriginalBody = JSON.parse(atob(body));
+                const newBody = fixBody(parsedOriginalBody);
+                const stringNewBody = JSON.stringify(newBody)
+
+                chrome.debugger.sendCommand(source, "Fetch.fulfillRequest", {
+                    requestId,
+                    responseCode: 200,
+                    responseHeaders: params.responseHeaders,
+                    body: btoa(stringNewBody)
+                });
             });
+
         });
     })
 }, { url: [{ schemes: ["http", "https"] }] });
