@@ -1,0 +1,13 @@
+{
+    "name": "Multitrigger Sentinel",
+    "version": "1.0",
+    "manifest_version": 3,
+    "permissions": [
+        "debugger",
+        "tabs",
+        "webNavigation"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    }
+}
