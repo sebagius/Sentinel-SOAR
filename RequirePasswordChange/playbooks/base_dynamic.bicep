@@ -153,7 +153,7 @@ resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2019-05-01' = 
                     method: 'post'
                     body: {
                       incidentArmId: '@triggerBody()?[\'object\']?[\'id\']'
-                      message: '<p class="editor-paragraph">Executing playbook {name}</p>'
+                      message: '<p class="editor-paragraph">Executing playbook {${playbookName}</p>'
                     }
                     path: '/Incidents/Comment'
                   }
