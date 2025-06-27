@@ -24,10 +24,11 @@ Additional privileges for the deployment user identity (this is if you plan to c
 To provide the necessary privileges to the service principal which conducts graph activities a deployment script needs to be executed. One of two options can be used to run the deployment scripts.
 1. Not recommended: Run the deployment scripts manually as an authenticated user - these can be found in the [scripts/manual](scripts/manual) directory. Easy for one time uses.
 2. Recommended: Deploy a user assigned managed identity to the resource group with the required privileges* for deployment, this script can be found in the [scripts/uami/deploy.ps1](scripts/uami/deploy.ps1) file. Better for continuous deployments.
+3. Alternatively - modify the scripts to use your own identity part of your deployment pipeline
 
-*This managed identity will provide the privileges using PIM if it is available. If it is, during deployment the service principal will request to elevate to the required deployment privileges. If PIM is not available, the privileges will be assigned permanently. If you require a similar PIM functionality without Entra ID P2, you will have to manually remove and assign the privileges at your direction.
+*This managed identity will provide the privileges using PIM JIT if it is available (TODO). If it is, during deployment the service principal will request to elevate to the required deployment privileges. If PIM is not available, the privileges will be assigned permanently. If you require a similar PIM functionality without Entra ID P2, you will have to manually remove and assign the privileges at your direction.
 
-Note: PIM is only used for deployment privileges, not for functional privileges. Due to the time-sensitive nature of incident response, it is recommended to keep the privileges enabled 24/7. The background managed identity is only accessible by the logic app function itself, there is no associated password, secret or certificate associated with the identity. 
+Note: PIM JIT is only used for deployment privileges, not for functional privileges. Due to the time-sensitive nature of incident response, it is recommended to keep the privileges enabled 24/7. The background managed identity is only accessible by the logic app function itself, there is no associated password, secret or certificate associated with the identity. 
 
 ## Configuration Recommendations
 TBD
@@ -46,9 +47,9 @@ TBD
 
 :white_check_mark: Dynamic time-bound/trigger playbook generation
 
-:x: Migrate from Managed Identity -> User Assigned Managed Identity
+:x: Migrate from Managed Identity -> User Assigned Managed Identity (for playbooks)
 
-:x: Automatic deployment scripts
+:x: Automatic deployment scripts (for deployment user assigned managed identity)
 
 :x: PIM for automatic deployment scripts
 
