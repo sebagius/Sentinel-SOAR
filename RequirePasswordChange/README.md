@@ -23,7 +23,7 @@ Additional privileges for the deployment user identity (this is if you plan to c
 ## Important: Deployment Scripts
 To provide the necessary privileges to the service principal which conducts graph activities a deployment script needs to be executed. One of two options can be used to run the deployment scripts.
 1. Not recommended: Run the deployment scripts manually as an authenticated user - these can be found in the [scripts/manual](scripts/manual) directory. Easy for one time uses.
-2. Recommended: Deploy a user assigned managed identity to the resource group with the required privileges* for deployment, this script can be found in the [scripts/uami/deploy.ps1](scripts/uami/deploy.ps1) file. Better for continuous deployments.
+2. Recommended: Deploy a user assigned managed identity to the resource group with the required privileges* for deployment, this script can be found in the [scripts/deployment-uami/deploy.ps1](scripts/deployment-uami/deploy.ps1) file. Better for continuous deployments.
 3. Alternatively - modify the scripts to use your own identity part of your deployment pipeline
 
 *This managed identity will provide the privileges using PIM JIT if it is available (TODO). If it is, during deployment the service principal will request to elevate to the required deployment privileges. If PIM is not available, the privileges will be assigned permanently. If you require a similar PIM functionality without Entra ID P2, you will have to manually remove and assign the privileges at your direction.
