@@ -6,18 +6,15 @@ The following variables are configuration options you are required to set
 var features = {
   identity: {
     name: 'RequirePasswordChange'
-    sentinelRole: '/providers/Microsoft.Authorization/roleDefinitions/3e150937-b8fe-4cfb-8069-0eaf05ecd056' // This is Sentinel Responder to add comments to incidents.
+    sentinelRole: '/providers/Microsoft.Authorization/roleDefinitions/3e150937-b8fe-4cfb-8069-0eaf05ecd056' // This is Sentinel Responder to add comments to incidents. Leave empty for no assignment
     entraRole: 'Privileged Authentication Administrator' // or Authentication Administrator
   }
+  
   scriptDeployment: {
     enabled: true
     identityName: 'script-deployment-identity'
   }
-  backgroundService: {
-    identity: {
-      entraRole: 'Privileged Authentication Administrator' // Recommended: Privileged Authentication Administrator or Authentication Administrator
-    }
-  }
+
   email: {
     enabled: true
     senderAddress: 'cybersecurity@example.org'

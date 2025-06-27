@@ -11,7 +11,7 @@ resource playbookIdentityDeployment 'Microsoft.ManagedIdentity/userAssignedIdent
   location:resourceGroup().location
 }
 
-resource playbookIdentityRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource playbookIdentityRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if(!empty(features.identity.sentinelRole)) {
   name:guid(playbookIdentityDeployment.id, features.identity.sentinelRole, resourceGroup().id)
   scope: resourceGroup()
   properties: {
