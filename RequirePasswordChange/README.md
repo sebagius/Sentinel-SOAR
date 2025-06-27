@@ -47,7 +47,7 @@ TBD
 
 :white_check_mark: Dynamic time-bound/trigger playbook generation
 
-:x: Migrate from Managed Identity -> User Assigned Managed Identity (for playbooks)
+:white_check_mark: Migrate from Managed Identity -> User Assigned Managed Identity (for playbooks)
 
 :x: Automatic deployment scripts (for deployment user assigned managed identity)
 
