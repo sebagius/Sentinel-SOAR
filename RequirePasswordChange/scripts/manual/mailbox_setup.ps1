@@ -14,7 +14,7 @@ function New-EntraMultipleSPAppRoleAssignment {
 }
 
 Connect-Entra -Scopes "Application.ReadWrite.All", "User.ReadWrite.All", "AppRoleAssignment.ReadWrite.All", "Directory.Read.All","RoleManagement.ReadWrite.Directory"
-$servicePrincipalName = 'RequirePasswordChange-Instant'
+$servicePrincipalName = 'RequirePasswordChange'
 $servicePrincipal = New-EntraMultipleSPAppRoleAssignment -ServicePrincipalName $servicePrincipalName -ResourceId "00000003-0000-0000-c000-000000000000" -Perms @("Mail.Send")
 $serviceprincipalAppId = $servicePrincipal.AppId
 Disconnect-Entra

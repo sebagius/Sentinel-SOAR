@@ -4,8 +4,8 @@ import {features} from '../configuration.bicep'
 @export()
 var apiConnection = {
     id: subscriptionResourceId('Microsoft.Web/locations/managedApis', resourceGroup().location, 'azuresentinel')
-    connectionId: resourceId('Microsoft.Web/connections', 'azuresentinel-${features.identity}')
-    connectionName: 'azuresentinel-${features.identity}'
+    connectionId: resourceId('Microsoft.Web/connections', 'azuresentinel-${features.identity.name}')
+    connectionName: 'azuresentinel-${features.identity.name}'
     connectionProperties: {
       authentication: {
         type: 'ManagedServiceIdentity'

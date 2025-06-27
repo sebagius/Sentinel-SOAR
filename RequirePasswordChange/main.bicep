@@ -6,6 +6,21 @@ module sentinelApi 'apiConnections/sentinel.bicep' = {
   name: apiConnection.connectionName
 }
 
+resource playbookIdentityDeployment 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: features.identity.name
+  location:resourceGroup().location
+}
+
+resource playbookIdentityRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name:guid(playbookIdentityDeployment.id, features.identity.sentinelRole, resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    principalId:playbookIdentityDeployment.properties.principalId
+    roleDefinitionId: features.identity.sentinelRole
+    principalType: 'ServicePrincipal'
+  }
+}
+
 module playbookDeployment 'playbooks/base_dynamic.bicep' = [for playbook in features.playbooks: {
   dependsOn: [sentinelApi]
   name: playbook.playbookName
@@ -19,8 +34,11 @@ module playbookDeployment 'playbooks/base_dynamic.bicep' = [for playbook in feat
     timeBoundTemplate: replace(loadTextContent(features.email.endUserNotifications.timeBoundTemplate), '{time}', '${playbook.waitTime} ${playbook.waitMeasure}s')
     immediateSubject: features.email.endUserNotifications.timeBoundSubject
     immediateTemplate: loadTextContent(features.email.endUserNotifications.immediateTemplate)
+    identityId: playbookIdentityDeployment.id
   }
 }]
+
+
 
 /*resource deploymentScriptIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if(features.scriptDeployment.enabled) {
   name: features.scriptDeployment.identityName

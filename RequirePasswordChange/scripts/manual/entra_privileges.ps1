@@ -13,8 +13,8 @@ function New-EntraMultipleSPAppRoleAssignment {
     return $targetPrincipal
 }
 
-$servicePrincipalName = 'RequirePasswordChange-Instant'
-$privilegedRole = 'Privileged Authentication Administrator'
+$servicePrincipalName = 'RequirePasswordChange' # If deploying manually, ensure this reflects #features.identity.name
+$privilegedRole = 'Privileged Authentication Administrator' # If deploying manually, ensure this reflects features.identity.role
 
 # Required User Administrator, Application Administrator roles to execute
 Connect-Entra -Scopes "Application.ReadWrite.All", "User.ReadWrite.All", "AppRoleAssignment.ReadWrite.All", "Directory.Read.All","RoleManagement.ReadWrite.Directory"

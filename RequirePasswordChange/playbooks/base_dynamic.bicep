@@ -13,12 +13,17 @@ param immediateTemplate string
 param timeBoundSubject string
 param timeBoundTemplate string
 
+param identityId string
+
 #disable-next-line BCP081 //Bicep cannot look up the spec as it is not published correctly by Microsoft
 resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2017-07-01' = {
   name: playbookName
   location: resourceGroup().location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${identityId}': {}
+    }
   }
   properties: {
     state: 'Enabled'

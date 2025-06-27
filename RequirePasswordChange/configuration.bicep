@@ -4,7 +4,11 @@ The following variables are configuration options you are required to set
 */
 @export()
 var features = {
-  identity: 'RequirePasswordChange'
+  identity: {
+    name: 'RequirePasswordChange'
+    sentinelRole: '/providers/Microsoft.Authorization/roleDefinitions/3e150937-b8fe-4cfb-8069-0eaf05ecd056' // This is Sentinel Responder to add comments to incidents.
+    entraRole: 'Privileged Authentication Administrator' // or Authentication Administrator
+  }
   scriptDeployment: {
     enabled: true
     identityName: 'script-deployment-identity'
