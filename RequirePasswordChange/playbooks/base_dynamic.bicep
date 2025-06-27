@@ -108,6 +108,8 @@ resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2019-05-01' = 
                   runAfter: {
                     'Add_comment_to_incident_(V3)': [
                       'Succeeded'
+                      'Failed'
+                      'TimedOut'
                     ]
                   }
                   type: 'ApiConnection'
