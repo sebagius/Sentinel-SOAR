@@ -34,13 +34,13 @@ Note: PIM JIT is only used for deployment privileges, not for functional privile
 TBD
 
 ## Deployment Artifacts
-| Name/Resource                                                              | Required           | Type                          | Dependencies |
-| -------------------------------------------------------------------------- | ------------------ | ----------------------------- | ------------ |
-| [playbooks/base_dynamic](playbooks/base_dynamic.bicep)                     | :white_check_mark: | Logic App                     | None         |
-| [UAMI for Playbooks](main.bicep)                                           | :white_check_mark: | Entra Service Principal (App) | playbooks/base_dynamic |
-| [apiConnections/sentinel](apiConnections/sentinel.bicep)                   |                    | API Connection                | None         |
-| [Shared Mailbox](scripts/mailbox_setup.bicep)                              |                    | Exchange Online Mailbox       | None         |
-| [UAMI for Deployment](scripts/deployment-uami/deploy.ps1)                  |                    | Entra Service Principal (App) | None         |
+| Name/Resource                                                              | Required           | Type                          | Dependencies        |
+| -------------------------------------------------------------------------- | ------------------ | ----------------------------- | ------------------- |
+| [playbooks/base_dynamic](playbooks/base_dynamic.bicep)                     | :white_check_mark: | Logic App                     | UAMI for Playbooks  |
+| [UAMI for Playbooks](main.bicep)                                           | :white_check_mark: | Entra Service Principal (App) | None                |
+| [apiConnections/sentinel](apiConnections/sentinel.bicep)                   |                    | API Connection                | None                |
+| [Shared Mailbox](scripts/mailbox_setup.bicep)                              |                    | Exchange Online Mailbox       | None                |
+| [UAMI for Deployment](scripts/deployment-uami/deploy.ps1)                  |                    | Entra Service Principal (App) | None                |
 
 # Feature Status
 
