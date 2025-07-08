@@ -1,7 +1,7 @@
 /* Originally developed by Sebastian Agius */
 //Important: TODO: Merge manual script with current script and convert from cmdlets to graph api calls
 
-import {features, playbooks} from '../configuration.bicep'
+import {features} from '../configuration.bicep'
 
 param identityId string
 
@@ -24,7 +24,7 @@ $mailboxDisplayName = '{1}'
 $securityGroupAlias = '{2}'
 $securityGroupName = '{3}'
 $serviceprincipalAppId = (Get-AzADServicePrincipal -Filter "displayName eq '{4}'").AppId
-''', features.email.senderAddress, features.email.senderDisplayName, features.email.securityGroupAlias, features.email.securityGroupName, playbooks.backgroundService.name),
+''', features.email.senderAddress, features.email.senderDisplayName, features.email.securityGroupAlias, features.email.securityGroupName, features.identity.name),
 '''
 Connect-ExchangeOnline
 $mbox = Get-Mailbox -Identity $mailboxAddress -ErrorAction SilentlyContinue
