@@ -4,6 +4,10 @@ The following variables are configuration options you are required to set
 */
 @export()
 var features = {
+  experimental: {
+    multitrigger: false
+  }
+
   identity: {
     name: 'RequirePasswordChange'
     sentinelRole: '/providers/Microsoft.Authorization/roleDefinitions/3e150937-b8fe-4cfb-8069-0eaf05ecd056' // This is Sentinel Responder to add comments to incidents. Leave empty for no assignment
@@ -11,7 +15,7 @@ var features = {
   }
   
   scriptDeployment: {
-    enabled: true
+    enabled: false // not implemented yet
     identityName: 'script-deployment-identity'
   }
 

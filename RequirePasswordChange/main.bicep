@@ -21,7 +21,7 @@ resource playbookIdentityRoleAssignment 'Microsoft.Authorization/roleAssignments
   }
 }
 
-module playbookDeployment 'playbooks/base_dynamic.bicep' = [for playbook in features.playbooks: {
+module entityPlaybookDeployment 'playbooks/base_dynamic_entity.bicep' = [for playbook in features.playbooks: if(!features.experimental.multitrigger) {
   dependsOn: [sentinelApi]
   name: playbook.playbookName
   params: {
@@ -37,6 +37,46 @@ module playbookDeployment 'playbooks/base_dynamic.bicep' = [for playbook in feat
     identityId: playbookIdentityDeployment.id
   }
 }]
+
+module incidentPlaybookDeployment 'playbooks/base_dynamic_incident.bicep' = [for playbook in features.playbooks: if(!features.experimental.multitrigger) {
+  dependsOn: [sentinelApi]
+  name: playbook.playbookName
+  params: {
+    playbookName: playbook.playbookName
+    waitMeasure: playbook.waitMeasure
+    waitTime: playbook.waitTime
+    notifierEmail: features.email.senderAddress
+    alertRecipient: features.email.internalNotifications.recipientAddress
+    timeBoundSubject: features.email.endUserNotifications.timeBoundSubject
+    timeBoundTemplate: replace(loadTextContent(features.email.endUserNotifications.timeBoundTemplate), '{time}', '${playbook.waitTime} ${playbook.waitMeasure}s')
+    //immediateSubject: features.email.endUserNotifications.timeBoundSubject
+    //immediateTemplate: loadTextContent(features.email.endUserNotifications.immediateTemplate)
+    identityId: playbookIdentityDeployment.id
+  }
+}]
+
+
+
+
+/* Multitrigger experimental deployment */
+module experimentalPlaybookDeployment 'playbooks/base_dynamic.bicep' = [for playbook in features.playbooks: if(features.experimental.multitrigger) {
+  dependsOn: [sentinelApi]
+  name: playbook.playbookName
+  params: {
+    playbookName: playbook.playbookName
+    waitMeasure: playbook.waitMeasure
+    waitTime: playbook.waitTime
+    notifierEmail: features.email.senderAddress
+    alertRecipient: features.email.internalNotifications.recipientAddress
+    timeBoundSubject: features.email.endUserNotifications.timeBoundSubject
+    timeBoundTemplate: replace(loadTextContent(features.email.endUserNotifications.timeBoundTemplate), '{time}', '${playbook.waitTime} ${playbook.waitMeasure}s')
+    //immediateSubject: features.email.endUserNotifications.timeBoundSubject
+    //immediateTemplate: loadTextContent(features.email.endUserNotifications.immediateTemplate)
+    identityId: playbookIdentityDeployment.id
+  }
+}]
+
+
 
 
 
