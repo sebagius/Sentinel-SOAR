@@ -23,9 +23,9 @@ resource playbookIdentityRoleAssignment 'Microsoft.Authorization/roleAssignments
 
 module entityPlaybookDeployment 'playbooks/base_dynamic_entity.bicep' = [for playbook in features.playbooks: if(!features.experimental.multitrigger) {
   dependsOn: [sentinelApi]
-  name: playbook.playbookName
+  name: 'Entity-${playbook.playbookName}'
   params: {
-    playbookName: playbook.playbookName
+    playbookName: 'Entity-${playbook.playbookName}'
     waitMeasure: playbook.waitMeasure
     waitTime: playbook.waitTime
     notifierEmail: features.email.senderAddress
@@ -40,9 +40,9 @@ module entityPlaybookDeployment 'playbooks/base_dynamic_entity.bicep' = [for pla
 
 module incidentPlaybookDeployment 'playbooks/base_dynamic_incident.bicep' = [for playbook in features.playbooks: if(!features.experimental.multitrigger) {
   dependsOn: [sentinelApi]
-  name: playbook.playbookName
+  name: 'Incident-${playbook.playbookName}'
   params: {
-    playbookName: playbook.playbookName
+    playbookName: 'Incident-${playbook.playbookName}'
     waitMeasure: playbook.waitMeasure
     waitTime: playbook.waitTime
     notifierEmail: features.email.senderAddress

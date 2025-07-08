@@ -16,8 +16,6 @@ param timeBoundTemplate string
 param identityId string
 
 resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2019-05-01' = {
-  #disable-next-line BCP187 // not in the latest spec but gets added automatically anyway, decreases deployment what-if output
-  kind: 'V1'
   name: playbookName
   location: resourceGroup().location
   identity: {
