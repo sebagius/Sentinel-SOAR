@@ -16,13 +16,12 @@ function New-EntraMultipleSPAppRoleAssignment {
 Connect-Entra -Scopes "Application.ReadWrite.All", "User.ReadWrite.All", "AppRoleAssignment.ReadWrite.All", "Directory.Read.All","RoleManagement.ReadWrite.Directory"
 $servicePrincipalName = 'RequirePasswordChange'
 $servicePrincipal = New-EntraMultipleSPAppRoleAssignment -ServicePrincipalName $servicePrincipalName -ResourceId "00000003-0000-0000-c000-000000000000" -Perms @("Mail.Send")
-$serviceprincipalAppId = $servicePrincipal.AppId
+$appId = $servicePrincipal.AppId
+$spId = $servicePrincipal.Id
 Disconnect-Entra
 
 $mailboxAddress = 'cybersecurity'
 $mailboxDisplayName = "ICT Cyber Security"
-$securityGroupAlias = 'cybersecurity_bgservice'
-$securityGroupName = "Cyber Security Background Email Services"
 
 Connect-ExchangeOnline
 $mbox = Get-Mailbox -Identity $mailboxAddress -ErrorAction SilentlyContinue
@@ -35,27 +34,11 @@ if($null -eq $mbox) {
     }
 }
 
-$securitydg = Get-DistributionGroup -Identity $securityGroupAlias -ErrorAction SilentlyContinue
+New-ServicePrincipal -AppId "${appId}" -ObjectId "${spId}" -DisplayName "EOSP-${servicePrincipalName}"
+New-ManagementScope -Name "EOMS-${servicePrincipalName}" -RecipientRestrictionFilter "Alias -eq '$mailboxAddress'"
+New-ManagementRoleAssignment -Name "EOMRA-${servicePrincipalName}" -Role "Application Mail.Send" -App "${appId}" -CustomResourceScope "EOMS-${servicePrincipalName}"
 
-if($null -eq $securitydg) {
-    $securitydg = New-DistributionGroup -Name $securityGroupName -Alias $securityGroupAlias -Type security -ErrorAction SilentlyContinue
+Test-ServicePrincipalAuthorization -Identity ${appId} -Resource $mailboxAddress
+Test-ServicePrincipalAuthorization -Identity ${appId} -Resource "postmaster"
 
-    if($null -eq $securitydg) {
-        Write-Host "Failed to create distribution group. Quitting"
-        Exit-PSSession
-    }
-}
-
-$res = Add-DistributionGroupMember -Identity $securitydg.Alias -Member $mailboxAddress -ErrorAction SilentlyContinue
-if($null -eq $res) { # todo, result is null even if success
-    Write-Host "Failed to add distribution group member"
-}
-
-$res = New-ApplicationAccessPolicy -AppId $serviceprincipalAppId -PolicyScopeGroupId $securitydg.Alias -AccessRight RestrictAccess -Description "Allows the app to use a shared mailbox to send emails."
-if($null -eq $res) {
-    Write-Host "Failed to assign access policy - beware if mail privileges was granted the service principal can send on behalf of anyone!"
-}
-
-Test-ApplicationAccessPolicy -Identity $mailboxAddress -AppId $serviceprincipalAppId
-Test-ApplicationAccessPolicy -Identity 'postmaster' -AppId $serviceprincipalAppId
 Disconnect-ExchangeOnline
