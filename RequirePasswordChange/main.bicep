@@ -32,8 +32,8 @@ module playbookDeployment 'playbooks/base_dynamic.bicep' = [for playbook in feat
     alertRecipient: features.email.internalNotifications.recipientAddress
     timeBoundSubject: features.email.endUserNotifications.timeBoundSubject
     timeBoundTemplate: replace(loadTextContent(features.email.endUserNotifications.timeBoundTemplate), '{time}', '${playbook.waitTime} ${playbook.waitMeasure}s')
-    immediateSubject: features.email.endUserNotifications.timeBoundSubject
-    immediateTemplate: loadTextContent(features.email.endUserNotifications.immediateTemplate)
+    //immediateSubject: features.email.endUserNotifications.timeBoundSubject
+    //immediateTemplate: loadTextContent(features.email.endUserNotifications.immediateTemplate)
     identityId: playbookIdentityDeployment.id
   }
 }]

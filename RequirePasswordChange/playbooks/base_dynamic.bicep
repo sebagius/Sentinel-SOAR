@@ -8,8 +8,8 @@ param waitMeasure string
 param notifierEmail string
 param alertRecipient string
 
-param immediateSubject string
-param immediateTemplate string
+//param immediateSubject string
+//param immediateTemplate string
 param timeBoundSubject string
 param timeBoundTemplate string
 
