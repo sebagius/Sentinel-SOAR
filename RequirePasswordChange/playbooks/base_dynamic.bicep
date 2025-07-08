@@ -1,5 +1,5 @@
 /* Originally developed by Sebastian Agius */
-import { apiConnection } from '../apiConnections/sentinel.bicep'
+import { getApiConnect } from '../apiConnections/sentinel.bicep'
 
 param playbookName string
 param waitTime int
@@ -233,7 +233,7 @@ resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2019-05-01' = 
     parameters: {
       '$connections': {
         value: {
-          azuresentinel: apiConnection
+          azuresentinel: getApiConnect(identityId)
         }
       }
     }
@@ -249,6 +249,7 @@ var changePasswordActions = {
       method: 'GET'
       authentication: {
         type: 'ManagedServiceIdentity'
+        identity: identityId
         audience: 'https://graph.microsoft.com'
       }
     }
@@ -313,6 +314,7 @@ var changePasswordActions = {
       }
       authentication: {
         type: 'ManagedServiceIdentity'
+        identity: identityId
         audience: 'https://graph.microsoft.com'
       }
     }
@@ -354,6 +356,7 @@ var changePasswordActions = {
       }
       authentication: {
         type: 'ManagedServiceIdentity'
+        identity: identityId
         audience: 'https://graph.microsoft.com'
       }
     }
@@ -375,6 +378,7 @@ var changePasswordActions = {
       method: 'POST'
       authentication: {
         type: 'ManagedServiceIdentity'
+        identity: identityId
         audience: 'https://graph.microsoft.com'
       }
     }
@@ -417,6 +421,7 @@ var changePasswordActions = {
       }
       authentication: {
         type: 'ManagedServiceIdentity'
+        identity: identityId
         audience: 'https://graph.microsoft.com'
       }
     }
@@ -455,6 +460,7 @@ var changePasswordActions = {
           }
           authentication: {
             type: 'ManagedServiceIdentity'
+            identity: identityId
             audience: 'https://graph.microsoft.com'
           }
         }
@@ -490,6 +496,7 @@ var changePasswordActions = {
           method: 'GET'
           authentication: {
             type: 'ManagedServiceIdentity'
+            identity: identityId
             audience: 'https://graph.microsoft.com'
           }
         }
@@ -591,6 +598,7 @@ var changePasswordActions = {
       }
       authentication: {
         type: 'ManagedServiceIdentity'
+        identity: identityId
         audience: 'https://graph.microsoft.com'
       }
     }
@@ -633,6 +641,7 @@ var changePasswordActions = {
       }
       authentication: {
         type: 'ManagedServiceIdentity'
+        identity: identityId
         audience: 'https://graph.microsoft.com'
       }
     }

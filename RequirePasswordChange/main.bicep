@@ -1,9 +1,9 @@
 /* Originally developed by Sebastian Agius */
 import {features} from 'configuration.bicep'
-import {apiConnection} from 'apiConnections/sentinel.bicep'
+import {getApiConnect} from 'apiConnections/sentinel.bicep'
 
 module sentinelApi 'apiConnections/sentinel.bicep' = {
-  name: apiConnection.connectionName
+  name: getApiConnect('').connectionName
 }
 
 resource playbookIdentityDeployment 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
