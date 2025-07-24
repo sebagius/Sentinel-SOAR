@@ -31,7 +31,7 @@ module entityPlaybookDeployment 'playbooks/base_dynamic_entity.bicep' = [for pla
     notifierEmail: features.email.senderAddress
     alertRecipient: features.email.internalNotifications.recipientAddress
     timeBoundSubject: features.email.endUserNotifications.timeBoundSubject
-    timeBoundTemplate: replace(loadTextContent(features.email.endUserNotifications.timeBoundTemplate), '{time}', '${playbook.waitTime} ${playbook.waitMeasure}s')
+    timeBoundTemplate: replace(loadTextContent(features.email.endUserNotifications.timeBoundTemplate), '{time}', '@{addToTime(utcNow(), ${playbook.waitTime}, \'${playbook.waitMeasure}\', \'f\')}')
     //immediateSubject: features.email.endUserNotifications.timeBoundSubject
     //immediateTemplate: loadTextContent(features.email.endUserNotifications.immediateTemplate)
     identityId: playbookIdentityDeployment.id
@@ -48,7 +48,7 @@ module incidentPlaybookDeployment 'playbooks/base_dynamic_incident.bicep' = [for
     notifierEmail: features.email.senderAddress
     alertRecipient: features.email.internalNotifications.recipientAddress
     timeBoundSubject: features.email.endUserNotifications.timeBoundSubject
-    timeBoundTemplate: replace(loadTextContent(features.email.endUserNotifications.timeBoundTemplate), '{time}', '${playbook.waitTime} ${playbook.waitMeasure}s')
+    timeBoundTemplate: replace(loadTextContent(features.email.endUserNotifications.timeBoundTemplate), '{time}', '@{addToTime(utcNow(), ${playbook.waitTime}, \'${playbook.waitMeasure}\', \'f\')}')
     //immediateSubject: features.email.endUserNotifications.timeBoundSubject
     //immediateTemplate: loadTextContent(features.email.endUserNotifications.immediateTemplate)
     identityId: playbookIdentityDeployment.id

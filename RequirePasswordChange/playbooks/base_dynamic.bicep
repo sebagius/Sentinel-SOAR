@@ -94,7 +94,7 @@ resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2019-05-01' = 
       actions: {
         Trigger_Type: {
           runAfter: {
-            Initialise_user_list: [
+            Initialise_user_list_toaction: [
               'Succeeded'
             ]
           }
@@ -205,7 +205,7 @@ resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2019-05-01' = 
           expression: '@coalesce(trigger().inputs?[\'path\'], coalesce(trigger().inputs?[\'method\'], \'unknown\'))'
           type: 'Switch'
         }
-        Initialise_user_list: {
+        Initialise_user_list_toaction: {
           runAfter: {}
           type: 'InitializeVariable'
           inputs: {
@@ -213,6 +213,11 @@ resource workflows_baseDynamicPlaybook 'Microsoft.Logic/workflows@2019-05-01' = 
               {
                 name: 'user_list'
                 type: 'array'
+              }
+              {
+                name: 'to_action'
+                type: 'boolean'
+                value: true
               }
             ]
           }
@@ -245,7 +250,7 @@ var changePasswordActions = {
     runAfter: {}
     type: 'Http'
     inputs: {
-      uri: 'https://graph.microsoft.com/v1.0/users/@{item()}?$select=userPrincipalName,id,accountEnabled,givenName'
+      uri: 'https://graph.microsoft.com/v1.0/users/@{item()}?$select=userPrincipalName,id,accountEnabled,displayName'
       method: 'GET'
       authentication: {
         type: 'ManagedServiceIdentity'
@@ -272,6 +277,9 @@ var changePasswordActions = {
         type: 'object'
         properties: {
           userPrincipalName: {
+            type: 'string'
+          }
+          displayName: {
             type: 'string'
           }
           id: {
@@ -329,113 +337,6 @@ var changePasswordActions = {
   }
   Account_enabled: {
     actions: {
-      'Email_-_Success': {
-        runAfter: {
-          Revoke_Sessions: [
-            'Succeeded'
-          ]
-        }
-        type: 'Http'
-        inputs: {
-          uri: 'https://graph.microsoft.com/v1.0/users/@{parameters(\'notifier_email\')}/sendMail'
-          method: 'POST'
-          headers: {
-            'Content-Type': 'application/json'
-          }
-          body: {
-            saveToSentItems: false
-            message: {
-              toRecipients: [
-                {
-                  emailAddress: {
-                    address: '@{parameters(\'alert_email\')}'
-                  }
-                }
-              ]
-              subject: 'Require Password Change succeeded in running'
-              body: {
-                contentType: 'text'
-                content: 'Successfully required @{body(\'Validate_response\')?[\'userPrincipalName\']} to change password next logon'
-              }
-            }
-          }
-          authentication: {
-            type: 'ManagedServiceIdentity'
-            identity: identityId
-            audience: 'https://graph.microsoft.com'
-          }
-        }
-        runtimeConfiguration: {
-          contentTransfer: {
-            transferMode: 'Chunked'
-          }
-        }
-      }
-      Revoke_Sessions: {
-        runAfter: {
-          Password_Change: [
-            'Succeeded'
-          ]
-        }
-        type: 'Http'
-        inputs: {
-          uri: 'https://graph.microsoft.com/v1.0/users/@{body(\'Validate_response\')?[\'id\']}/revokeSignInSessions'
-          method: 'POST'
-          authentication: {
-            type: 'ManagedServiceIdentity'
-            identity: identityId
-            audience: 'https://graph.microsoft.com'
-          }
-        }
-        runtimeConfiguration: {
-          contentTransfer: {
-            transferMode: 'Chunked'
-          }
-        }
-      }
-      'Email_-_Revoke_Failure_Password_Success': {
-        runAfter: {
-          Revoke_Sessions: [
-            'Failed'
-            'TimedOut'
-          ]
-        }
-        type: 'Http'
-        inputs: {
-          uri: 'https://graph.microsoft.com/v1.0/users/@{parameters(\'notifier_email\')}/sendMail'
-          method: 'POST'
-          headers: {
-            'Content-Type': 'application/json'
-          }
-          body: {
-            saveToSentItems: false
-            message: {
-              toRecipients: [
-                {
-                  emailAddress: {
-                    address: '@{parameters(\'alert_email\')}'
-                  }
-                }
-              ]
-              subject: 'Require Password Change partial success in running'
-              body: {
-                contentType: 'text'
-                content: 'Successfully required @{body(\'Validate_response\')?[\'userPrincipalName\']} to change password next logon - but was unable to revoke sign in sessions. Please do this manually.'
-              }
-            }
-          }
-          authentication: {
-            type: 'ManagedServiceIdentity'
-            identity: identityId
-            audience: 'https://graph.microsoft.com'
-          }
-        }
-        runtimeConfiguration: {
-          contentTransfer: {
-            transferMode: 'Chunked'
-          }
-        }
-      }
       Wait_for_user: {
         actions: {
           'Email_-_Target_wait_time': {
@@ -459,7 +360,7 @@ var changePasswordActions = {
                   subject: timeBoundSubject
                   body: {
                     contentType: 'html'
-                    content: timeBoundTemplate
+                    content: replace(timeBoundTemplate, '{name}', '@{body(\'Validate_response\')?[\'displayName\']}')
                   }
                 }
               }
@@ -541,7 +442,15 @@ var changePasswordActions = {
             inputs: {}
           }
           Did_change_pwd: {
-            actions: {}
+            actions: {
+              Set_to_action: {
+                type: 'SetVariable'
+                inputs: {
+                  name: 'to_action'
+                  value: false
+                }
+              }
+            }
             runAfter: {
               Parse_JSON: [
                 'Succeeded'
@@ -578,77 +487,211 @@ var changePasswordActions = {
         }
         type: 'If'
       }
-      Password_Change: {
+      If_to_action: {
+        type: 'If'
+        expression: {
+          and: [
+            {
+              equals: [
+                '@variables(\'to_action\')'
+                '@true'
+              ]
+            }
+          ]
+        }
+        actions: {
+          Password_Change: {
+            runAfter: {}
+            type: 'Http'
+            inputs: {
+              uri: 'https://graph.microsoft.com/v1.0/users/@{body(\'Validate_response\')?[\'id\']}'
+              method: 'PATCH'
+              headers: {
+                'Content-Type': 'application/json'
+              }
+              body: {
+                passwordProfile: {
+                  forceChangePasswordNextSignIn: true
+                }
+              }
+              authentication: {
+                type: 'ManagedServiceIdentity'
+                identity: identityId
+                audience: 'https://graph.microsoft.com'
+              }
+            }
+            runtimeConfiguration: {
+              contentTransfer: {
+                transferMode: 'Chunked'
+              }
+            }
+          }
+          Revoke_Sessions: {
+            runAfter: {
+              Password_Change: [
+                'Succeeded'
+              ]
+            }
+            type: 'Http'
+            inputs: {
+              uri: 'https://graph.microsoft.com/v1.0/users/@{body(\'Validate_response\')?[\'id\']}/revokeSignInSessions'
+              method: 'POST'
+              authentication: {
+                type: 'ManagedServiceIdentity'
+                identity: identityId
+                audience: 'https://graph.microsoft.com'
+              }
+            }
+            runtimeConfiguration: {
+              contentTransfer: {
+                transferMode: 'Chunked'
+              }
+            }
+          }
+          'Email_-_Revoke_Failure_Password_Success': {
+            runAfter: {
+              Revoke_Sessions: [
+                'Failed'
+                'TimedOut'
+              ]
+            }
+            type: 'Http'
+            inputs: {
+              uri: 'https://graph.microsoft.com/v1.0/users/@{parameters(\'notifier_email\')}/sendMail'
+              method: 'POST'
+              headers: {
+                'Content-Type': 'application/json'
+              }
+              body: {
+                saveToSentItems: false
+                message: {
+                  toRecipients: [
+                    {
+                      emailAddress: {
+                        address: '@{parameters(\'alert_email\')}'
+                      }
+                    }
+                  ]
+                  subject: 'Require Password Change partial success in running'
+                  body: {
+                    contentType: 'text'
+                    content: 'Successfully required @{body(\'Validate_response\')?[\'userPrincipalName\']} to change password next logon - but was unable to revoke sign in sessions. Please do this manually.'
+                  }
+                }
+              }
+              authentication: {
+                type: 'ManagedServiceIdentity'
+                identity: identityId
+                audience: 'https://graph.microsoft.com'
+              }
+            }
+            runtimeConfiguration: {
+              contentTransfer: {
+                transferMode: 'Chunked'
+              }
+            }
+          }
+          'Email_-_Failure_Pass_Change': {
+            runAfter: {
+              Password_Change: [
+                'TimedOut'
+                'Failed'
+              ]
+            }
+            type: 'Http'
+            inputs: {
+              uri: 'https://graph.microsoft.com/v1.0/users/@{parameters(\'notifier_email\')}/sendMail'
+              method: 'POST'
+              headers: {
+                'Content-Type': 'application/json'
+              }
+              body: {
+                saveToSentItems: false
+                message: {
+                  toRecipients: [
+                    {
+                      emailAddress: {
+                        address: '@{parameters(\'alert_email\')}'
+                      }
+                    }
+                  ]
+                  subject: 'Require Password Change failed to run'
+                  body: {
+                    contentType: 'text'
+                    content: 'Failed to require password change for user id @{body(\'Validate_response\')?[\'userPrincipalName\']} - it\'s possible that this user is hybrid and that the change password variable is not directory synchronised'
+                  }
+                }
+              }
+              authentication: {
+                type: 'ManagedServiceIdentity'
+                identity: identityId
+                audience: 'https://graph.microsoft.com'
+              }
+            }
+            runtimeConfiguration: {
+              contentTransfer: {
+                transferMode: 'Chunked'
+              }
+            }
+          }
+          'Email_-_Success': {
+            runAfter: {
+              Revoke_Sessions: [
+                'Succeeded'
+              ]
+            }
+            type: 'Http'
+            inputs: {
+              uri: 'https://graph.microsoft.com/v1.0/users/@{parameters(\'notifier_email\')}/sendMail'
+              method: 'POST'
+              headers: {
+                'Content-Type': 'application/json'
+              }
+              body: {
+                saveToSentItems: false
+                message: {
+                  toRecipients: [
+                    {
+                      emailAddress: {
+                        address: '@{parameters(\'alert_email\')}'
+                      }
+                    }
+                  ]
+                  subject: 'Require Password Change succeeded in running'
+                  body: {
+                    contentType: 'text'
+                    content: 'Successfully required @{body(\'Validate_response\')?[\'userPrincipalName\']} to change password next logon'
+                  }
+                }
+              }
+              authentication: {
+                type: 'ManagedServiceIdentity'
+                identity: identityId
+                audience: 'https://graph.microsoft.com'
+              }
+            }
+            runtimeConfiguration: {
+              contentTransfer: {
+                transferMode: 'Chunked'
+              }
+            }
+          }
+        }
+        else: {
+          actions: {
+            Reset_to_action: {
+              type: 'SetVariable'
+              inputs: {
+                name: 'to_action'
+                value: true
+              }
+            }
+          }
+        }
         runAfter: {
           Wait_for_user: [
             'Succeeded'
           ]
-        }
-        type: 'Http'
-        inputs: {
-          uri: 'https://graph.microsoft.com/v1.0/users/@{body(\'Validate_response\')?[\'id\']}'
-          method: 'PATCH'
-          headers: {
-            'Content-Type': 'application/json'
-          }
-          body: {
-            passwordProfile: {
-              forceChangePasswordNextSignIn: true
-            }
-          }
-          authentication: {
-            type: 'ManagedServiceIdentity'
-            identity: identityId
-            audience: 'https://graph.microsoft.com'
-          }
-        }
-        runtimeConfiguration: {
-          contentTransfer: {
-            transferMode: 'Chunked'
-          }
-        }
-      }
-      'Email_-_Failure_Pass_Change': {
-        runAfter: {
-          Password_Change: [
-            'TimedOut'
-            'Failed'
-          ]
-        }
-        type: 'Http'
-        inputs: {
-          uri: 'https://graph.microsoft.com/v1.0/users/@{parameters(\'notifier_email\')}/sendMail'
-          method: 'POST'
-          headers: {
-            'Content-Type': 'application/json'
-          }
-          body: {
-            saveToSentItems: false
-            message: {
-              toRecipients: [
-                {
-                  emailAddress: {
-                    address: '@{parameters(\'alert_email\')}'
-                  }
-                }
-              ]
-              subject: 'Require Password Change failed to run'
-              body: {
-                contentType: 'text'
-                content: 'Failed to require password change for user id @{body(\'Validate_response\')?[\'userPrincipalName\']} - it\'s possible that this user is hybrid and that the change password variable is not directory synchronised'
-              }
-            }
-          }
-          authentication: {
-            type: 'ManagedServiceIdentity'
-            identity: identityId
-            audience: 'https://graph.microsoft.com'
-          }
-        }
-        runtimeConfiguration: {
-          contentTransfer: {
-            transferMode: 'Chunked'
-          }
         }
       }
     }
